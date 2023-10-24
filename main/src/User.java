@@ -54,7 +54,18 @@ public class User extends Persistable {
                 System.out.println(e.getMessage());
             }
         } else {
-            System.out.println("User already in database!");
+            String sql = "UPDATE users SET username = ?, password = ?, user_type = ? WHERE uid = ?";
+            try {
+                PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setString(1, this.username);
+                statement.setString(2, this.password);
+                statement.setString(3, this.userType);
+                statement.setInt(4, this.uid);
+                statement.execute();
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
@@ -78,13 +89,13 @@ public class User extends Persistable {
 
     @Override
     boolean isInDatabase(Connection connection) {
-        String sql = "SELECT uid, username FROM users WHERE username = ?;";
+        String sql = "SELECT uid FROM users WHERE uid = ?;";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, this.username);
+            statement.setInt(1, this.uid);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
-                if (rs.getString("username").equals(this.username)) {
+                if (rs.getInt("uid") == this.uid) {
                     return true;
                 }
             }
