@@ -16,7 +16,8 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Hello world!");
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
-        ConsoleApp.run(getDBConnection());
+        LoginScreen mainApp = new LoginScreen();
+//        ConsoleApp.run(getDBConnection());
         //initialise();
 //        String url = "jdbc:sqlite:db/test.db";
 //        try {
@@ -32,7 +33,7 @@ public class Main {
 //        }
     }
 
-    private static Connection getDBConnection() {
+    public static Connection getDBConnection() {
         Connection connection;
         try {
             String url = "jdbc:sqlite:db/test.db";
