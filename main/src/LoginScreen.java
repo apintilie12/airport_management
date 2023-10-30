@@ -29,15 +29,7 @@ public class LoginScreen {
         });
 
         init();
-//        loginButton.addKeyListener(new KeyAdapter() {
-//            @Override
-//            public void keyPressed(KeyEvent e) {
-//                super.keyPressed(e);
-//                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-//                    doLogin();
-//                }
-//            }
-//        });
+
     }
 
     private void init() {
@@ -62,6 +54,8 @@ public class LoginScreen {
         } catch (Exception exc) {
             errorLabel.setText("Invalid username or password!");
             errorLabel.setForeground(Color.RED);
+            usernameField.setText("");
+            passwordField.setText("");
         }
     }
 
