@@ -37,7 +37,7 @@ public class LoginScreen {
         mainFrame.setFocusable(true);
         mainFrame.setContentPane(mainPanel);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setMinimumSize(new Dimension(400, 400));
+        mainFrame.setMinimumSize(new Dimension(600, 600));
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
@@ -50,7 +50,14 @@ public class LoginScreen {
         password = new String(passwordField.getPassword());
         try {
             login();
-            JOptionPane.showMessageDialog(null, "Current user: " + currentUser);
+            if(currentUser.getUserType().equals("admin")) {
+                new AdminHomeScreen(mainFrame, currentUser);
+            } else if (currentUser.getUserType().equals("ground")) {
+
+            } else {
+
+            }
+//            JOptionPane.showMessageDialog(null, "Current user: " + currentUser);
         } catch (Exception exc) {
             errorLabel.setText("Invalid username or password!");
             errorLabel.setForeground(Color.RED);
