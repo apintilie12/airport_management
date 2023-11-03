@@ -37,7 +37,7 @@ public class LoginScreen {
         mainFrame.setFocusable(true);
         mainFrame.setContentPane(mainPanel);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setMinimumSize(new Dimension(600, 600));
+        mainFrame.setMinimumSize(new Dimension(500, 500));
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
@@ -51,7 +51,7 @@ public class LoginScreen {
         try {
             login();
             if(currentUser.getUserType().equals("admin")) {
-                new AdminHomeScreen(mainFrame, currentUser);
+                new AdminHomeScreen(mainFrame, conn, currentUser);
             } else if (currentUser.getUserType().equals("ground")) {
 
             } else {

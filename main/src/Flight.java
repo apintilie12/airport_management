@@ -11,7 +11,9 @@ public class Flight {
     private String notes;
     private Aircraft aircraft;
 
-    public Flight(int fid, String flightNumber, char type, int eta, int etd, String origin, String destination, String notes, Aircraft aircraft) {
+    private String date;
+
+    public Flight(int fid, String flightNumber, char type, int eta, int etd, String origin, String destination, String notes, Aircraft aircraft, String date) {
         this.fid = fid;
         this.flightNumber = flightNumber;
         this.type = type;
@@ -21,6 +23,7 @@ public class Flight {
         this.destination = destination;
         this.notes = notes;
         this.aircraft = aircraft;
+        this.date = date;
     }
 
     @Override
@@ -35,6 +38,7 @@ public class Flight {
                 ", destination='" + destination + '\'' +
                 ", notes='" + notes + '\'' +
                 ", aircraft=" + aircraft +
+                ", date='" + date + '\'' +
                 '}';
     }
 
@@ -89,4 +93,13 @@ public class Flight {
     public Aircraft getAircraft() {
         return aircraft;
     }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
 }

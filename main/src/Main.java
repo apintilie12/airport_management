@@ -12,7 +12,7 @@ public class Main {
         User user = new User();
         user.loadFromDatabase(conn, "Mr. Stark");
 //        LoginScreen mainApp = new LoginScreen();
-        AdminHomeScreen adm = new AdminHomeScreen(new JFrame(""), user);
+        AdminHomeScreen adm = new AdminHomeScreen(new JFrame(""), conn, user);
 //        ConsoleApp.run(getDBConnection());
 
     }

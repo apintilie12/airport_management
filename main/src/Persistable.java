@@ -8,5 +8,7 @@ public abstract class Persistable {
 
     abstract boolean isInDatabase(Connection connection);
 
+    abstract boolean isInDatabase(Connection connection, Object... args);
+
     abstract void loadFromDatabase(Connection connection, Object... args);
 }

@@ -2,6 +2,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class User extends Persistable {
 
@@ -107,6 +108,27 @@ public class User extends Persistable {
     }
 
     @Override
+    boolean isInDatabase(Connection connection, Object... args) {
+        if(args.length > 0) {
+            String sql = "SELECT username FROM users WHERE username = ?;";
+            try {
+                PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setString(1, (String)args[0]);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    if (rs.getString("username").equals((String)args[0])) {
+                        return true;
+                    }
+                }
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return false;
+    }
+
+    @Override
     void loadFromDatabase(Connection connection, Object... args) {
         if (args.length > 0) {
             String sql = "SELECT * FROM users WHERE username = ?";
@@ -124,6 +146,10 @@ public class User extends Persistable {
                 System.out.println(e.getMessage());
             }
         }
+    }
+
+    public static Vector<User> getUserVector(Connection connection) {
+        return new Vector<>(getUserList(connection));
     }
 
     public static ArrayList<User> getUserList(Connection connection) {
