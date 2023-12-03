@@ -5,7 +5,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.Vector;
+import java.util.List;
 
 public class AdminHomeScreen {
 
@@ -18,7 +20,7 @@ public class AdminHomeScreen {
     private JButton removeUserButton;
     private JFrame currentFrame;
     private User user;
-    private Connection conn;
+    private final Connection conn;
 
     private Vector<User> users;
     private Vector<Flight> flights;
@@ -57,11 +59,37 @@ public class AdminHomeScreen {
                 dialog.pack();
                 dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
-                if(newUser.getUsername() != null) {
+                if (newUser.getUsername() != null) {
                     newUser.saveToDatabase(conn);
                     newUser.loadFromDatabase(conn, newUser.getUsername());
                     users.add(newUser);
                     userList.setListData(users);
+                }
+            }
+        });
+        removeUserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<User> selectedValuesList = userList.getSelectedValuesList();
+                for(User usr : selectedValuesList) {
+                    removeUser(usr);
+                    users.remove(usr);
+                }
+                userList.setListData(users);
+            }
+        });
+        editUserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<User> selectedValuesList = userList.getSelectedValuesList();
+                if(selectedValuesList.size() > 1) {
+                    JOptionPane.showMessageDialog(currentFrame, "Cannot edit multiple users simultaneously!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                } else if(selectedValuesList.size() == 1) {
+                    EditUserDialog dialog = new EditUserDialog(conn, selectedValuesList.get(0));
+                    dialog.pack();
+                    dialog.setLocationRelativeTo(null);
+                    dialog.setVisible(true);
+                    selectedValuesList.get(0).saveToDatabase(conn);
                 }
             }
         });
@@ -81,4 +109,16 @@ public class AdminHomeScreen {
     private void loadFlights() {
         System.out.println("Flights Loaded");
     }
+
+    private void removeUser(User userToRemove) {
+        String sql = "DELETE FROM users WHERE uid = ?";
+        try {
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, userToRemove.getUid());
+            statement.execute();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 }

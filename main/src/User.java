@@ -50,7 +50,8 @@ public class User extends Persistable {
                 statement.setString(1, this.username);
                 statement.setString(2, this.password);
                 statement.setString(3, this.userType);
-                statement.executeUpdate();
+                statement.execute();
+                statement.close();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -90,6 +91,9 @@ public class User extends Persistable {
 
     @Override
     boolean isInDatabase(Connection connection) {
+        if(uid == -1) {
+            return false;
+        }
         String sql = "SELECT uid FROM users WHERE uid = ?;";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -117,6 +121,7 @@ public class User extends Persistable {
                 ResultSet rs = statement.executeQuery();
                 if (rs.next()) {
                     if (rs.getString("username").equals((String)args[0])) {
+                        statement.close();
                         return true;
                     }
                 }
@@ -142,6 +147,7 @@ public class User extends Persistable {
                     this.password = rs.getString("password");
                     this.userType = rs.getString("user_type");
                 }
+                statement.close();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }

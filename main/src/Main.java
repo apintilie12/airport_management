@@ -11,8 +11,8 @@ public class Main {
         Connection conn = getDBConnection();
         User user = new User();
         user.loadFromDatabase(conn, "Mr. Stark");
-//        LoginScreen mainApp = new LoginScreen();
-        AdminHomeScreen adm = new AdminHomeScreen(new JFrame(""), conn, user);
+        LoginScreen mainApp = new LoginScreen();
+//        AdminHomeScreen adm = new AdminHomeScreen(new JFrame(""), conn, user);
 //        ConsoleApp.run(getDBConnection());
 
     }
