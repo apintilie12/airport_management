@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class User extends Persistable {
+public class User implements Persistable {
 
     private int uid;
     private String username;
@@ -71,26 +71,8 @@ public class User extends Persistable {
         }
     }
 
-
     @Override
-    public User loadFromDatabase(ResultSet resultSet) {
-        if (resultSet != null) {
-            try {
-                int uid = resultSet.getInt("uid");
-                String username = resultSet.getString("username");
-                String password = resultSet.getString("password");
-                String type = resultSet.getString("user_type");
-                return new User(uid, username, password, type);
-
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
-        return null;
-    }
-
-    @Override
-    boolean isInDatabase(Connection connection) {
+    public boolean isInDatabase(Connection connection) {
         if(uid == -1) {
             return false;
         }
@@ -104,7 +86,7 @@ public class User extends Persistable {
                     return true;
                 }
             }
-
+            statement.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -112,7 +94,7 @@ public class User extends Persistable {
     }
 
     @Override
-    boolean isInDatabase(Connection connection, Object... args) {
+    public boolean isInDatabase(Connection connection, Object... args) {
         if(args.length > 0) {
             String sql = "SELECT username FROM users WHERE username = ?;";
             try {
@@ -125,7 +107,7 @@ public class User extends Persistable {
                         return true;
                     }
                 }
-
+                statement.close();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -134,7 +116,7 @@ public class User extends Persistable {
     }
 
     @Override
-    void loadFromDatabase(Connection connection, Object... args) {
+    public void loadFromDatabase(Connection connection, Object... args) {
         if (args.length > 0) {
             String sql = "SELECT * FROM users WHERE username = ?";
             try {

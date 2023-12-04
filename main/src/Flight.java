@@ -1,19 +1,27 @@
-public class Flight {
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
-    private final int fid;
-    private final String flightNumber;
-    private final char type;
+public class Flight implements Persistable{
+
+    private int fid;
+    private String flightNumber;
+    private String type;
 
     private int eta;
     private int etd;
-    private final String origin;
-    private final String destination;
+    private String origin;
+    private String destination;
     private String notes;
     private String aircraftReg;
 
     private String date;
 
-    public Flight(int fid, String flightNumber, char type, int eta, int etd, String origin, String destination, String notes, String aircraft, String date) {
+    public Flight() {
+        this.fid = -1;
+    }
+
+    public Flight(int fid, String flightNumber, String type, int eta, int etd, String origin, String destination, String notes, String aircraft, String date) {
         this.fid = fid;
         this.flightNumber = flightNumber;
         this.type = type;
@@ -24,6 +32,118 @@ public class Flight {
         this.notes = notes;
         this.aircraftReg = aircraft;
         this.date = date;
+    }
+
+    @Override
+    public void saveToDatabase(Connection connection) {
+        if (!isInDatabase(connection)) {
+            String sql = "INSERT INTO flights (flight_number, type, eta, etd, origin, destination, notes, aircraft_registration, date) VALUES(?, ?, ?, ?, ? ,? ,? ,? ,?);";
+            try {
+                PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setString(1, this.flightNumber);
+                statement.setString(2, this.type);
+                statement.setInt(3, this.eta);
+                statement.setInt(4, this.etd);
+                statement.setString(5, this.origin);
+                statement.setString(6, this.destination);
+                statement.setString(7, this.notes);
+                statement.setString(8, this.aircraftReg);
+                statement.setString(9, this.date);
+                statement.execute();
+                statement.close();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        } else {
+            String sql = "UPDATE flights SET flight_number = ?, type = ?, eta = ?, etd = ?, origin = ?, destination = ?, notes = ?, aircraft_registration = ?, date = ? WHERE fid = ?";
+            try {
+                PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setString(1, this.flightNumber);
+                statement.setString(2, this.type);
+                statement.setInt(3, this.eta);
+                statement.setInt(4, this.etd);
+                statement.setString(5, this.origin);
+                statement.setString(6, this.destination);
+                statement.setString(7, this.notes);
+                statement.setString(8, this.aircraftReg);
+                statement.setString(9, this.date);
+                statement.setInt(10, this.fid);
+                statement.execute();
+                statement.close();
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public boolean isInDatabase(Connection connection) {
+        if(fid == -1) {
+            return false;
+        }
+        String sql = "SELECT fid FROM flights WHERE fid = ?;";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, this.fid);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                if (rs.getInt("fid") == this.fid) {
+                    return true;
+                }
+            }
+            statement.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return false;    }
+
+    @Override
+    public boolean isInDatabase(Connection connection, Object... args) {
+        if(args.length > 0) {
+            String sql = "SELECT flight_number FROM flights WHERE flight_number = ?;";
+            try {
+                PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setString(1, (String)args[0]);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    if (rs.getString("flight_number").equals((String)args[0])) {
+                        statement.close();
+                        return true;
+                    }
+                }
+                statement.close();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return false;    }
+
+    @Override
+    public void loadFromDatabase(Connection connection, Object... args) {
+        if (args.length > 0) {
+            String sql = "SELECT * FROM flights WHERE flight_number = ?";
+            try {
+                PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setString(1, (String) args[0]);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    this.fid = rs.getInt("fid");
+                    this.flightNumber = rs.getString("flight_number");
+                    this.type = rs.getString("type");
+                    this.eta = rs.getInt("eta");
+                    this.etd = rs.getInt("etd");
+                    this.origin = rs.getString("origin");
+                    this.destination = rs.getString("destination");
+                    this.notes = rs.getString("notes");
+                    this.aircraftReg = rs.getString("aircraft_registration");
+                    this.date = rs.getString("date");
+                }
+                statement.close();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     @Override
@@ -66,7 +186,7 @@ public class Flight {
         return flightNumber;
     }
 
-    public char getType() {
+    public String getType() {
         return type;
     }
 

@@ -1,14 +1,12 @@
 import java.sql.Connection;
 import java.sql.ResultSet;
 
-public abstract class Persistable {
-    abstract void saveToDatabase(Connection connection);
+public interface Persistable {
+    void saveToDatabase(Connection connection);
 
-    abstract Persistable loadFromDatabase(ResultSet resultSet);
+    boolean isInDatabase(Connection connection);
 
-    abstract boolean isInDatabase(Connection connection);
+    boolean isInDatabase(Connection connection, Object... args);
 
-    abstract boolean isInDatabase(Connection connection, Object... args);
-
-    abstract void loadFromDatabase(Connection connection, Object... args);
+    void loadFromDatabase(Connection connection, Object... args);
 }
