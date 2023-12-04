@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.util.Vector;
 import java.util.List;
 
-public class AdminHomeScreen {
+public class AdminHomeWindow {
 
     private JTabbedPane tabbedPane1;
     private JLabel welcomeLabel;
@@ -19,6 +19,10 @@ public class AdminHomeScreen {
     private JButton editUserButton;
     private JButton removeUserButton;
     private JButton logoutButton;
+    private JList flightList;
+    private JButton addFlightButton;
+    private JButton editFlightButton;
+    private JButton removeFlightButton;
     private JFrame currentFrame;
     private JFrame previousFrame;
     private User user;
@@ -27,7 +31,7 @@ public class AdminHomeScreen {
     private Vector<User> users;
     private Vector<Flight> flights;
 
-    public AdminHomeScreen(JFrame previousFrame, Connection conn, User currentUser) {
+    public AdminHomeWindow(JFrame previousFrame, Connection conn, User currentUser) {
         this.user = currentUser;
         this.conn = conn;
         this.previousFrame = previousFrame;
@@ -116,10 +120,12 @@ public class AdminHomeScreen {
     private void loadUsers() {
         users = User.getUserVector(conn);
         userList.setListData(users);
+//        userList.setCellRenderer();
     }
 
     private void loadFlights() {
-        System.out.println("Flights Loaded");
+        flights = Flight.getFlightVector(conn);
+        flightList.setListData(flights);
     }
 
     private void removeUser(User userToRemove) {

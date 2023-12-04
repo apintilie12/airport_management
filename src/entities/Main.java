@@ -1,8 +1,4 @@
-import javax.swing.*;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,7 +7,7 @@ public class Main {
         Connection conn = getDBConnection();
         User user = new User();
         user.loadFromDatabase(conn, "Mr. Stark");
-        LoginScreen mainApp = new LoginScreen();
+        LoginWindow mainApp = new LoginWindow();
 //        AdminHomeScreen adm = new AdminHomeScreen(new JFrame(""), conn, user);
 //        ConsoleApp.run(getDBConnection());
 

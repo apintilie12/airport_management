@@ -73,7 +73,7 @@ public class User implements Persistable {
 
     @Override
     public boolean isInDatabase(Connection connection) {
-        if(uid == -1) {
+        if (uid == -1) {
             return false;
         }
         String sql = "SELECT uid FROM users WHERE uid = ?;";
@@ -95,14 +95,14 @@ public class User implements Persistable {
 
     @Override
     public boolean isInDatabase(Connection connection, Object... args) {
-        if(args.length > 0) {
+        if (args.length > 0) {
             String sql = "SELECT username FROM users WHERE username = ?;";
             try {
                 PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, (String)args[0]);
+                statement.setString(1, (String) args[0]);
                 ResultSet rs = statement.executeQuery();
                 if (rs.next()) {
-                    if (rs.getString("username").equals((String)args[0])) {
+                    if (rs.getString("username").equals((String) args[0])) {
                         statement.close();
                         return true;
                     }
@@ -137,11 +137,7 @@ public class User implements Persistable {
     }
 
     public static Vector<User> getUserVector(Connection connection) {
-        return new Vector<>(getUserList(connection));
-    }
-
-    public static ArrayList<User> getUserList(Connection connection) {
-        ArrayList<User> list = new ArrayList<>();
+        Vector<User> vector = new Vector<>();
         String sql = "SELECT * FROM users";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -151,12 +147,12 @@ public class User implements Persistable {
                 String username = rs.getString("username");
                 String password = rs.getString("password");
                 String userType = rs.getString("user_type");
-                list.add(new User(uid, username, password, userType));
+                vector.add(new User(uid, username, password, userType));
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return list;
+        return vector;
     }
 
     public void setUsername(String username) {

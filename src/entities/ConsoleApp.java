@@ -2,6 +2,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Vector;
 
 public class ConsoleApp {
 
@@ -54,7 +55,7 @@ public class ConsoleApp {
     }
 
     private static void listUsers() {
-        ArrayList<User> users = User.getUserList(conn);
+        Vector<User> users = User.getUserVector(conn);
         for(User user : users) {
             System.out.println(user);
         }

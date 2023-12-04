@@ -1,8 +1,10 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Vector;
 
-public class Flight implements Persistable{
+public class Flight implements Persistable {
 
     private int fid;
     private String flightNumber;
@@ -79,7 +81,7 @@ public class Flight implements Persistable{
 
     @Override
     public boolean isInDatabase(Connection connection) {
-        if(fid == -1) {
+        if (fid == -1) {
             return false;
         }
         String sql = "SELECT fid FROM flights WHERE fid = ?;";
@@ -96,18 +98,19 @@ public class Flight implements Persistable{
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return false;    }
+        return false;
+    }
 
     @Override
     public boolean isInDatabase(Connection connection, Object... args) {
-        if(args.length > 0) {
+        if (args.length > 0) {
             String sql = "SELECT flight_number FROM flights WHERE flight_number = ?;";
             try {
                 PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, (String)args[0]);
+                statement.setString(1, (String) args[0]);
                 ResultSet rs = statement.executeQuery();
                 if (rs.next()) {
-                    if (rs.getString("flight_number").equals((String)args[0])) {
+                    if (rs.getString("flight_number").equals((String) args[0])) {
                         statement.close();
                         return true;
                     }
@@ -117,7 +120,8 @@ public class Flight implements Persistable{
                 System.out.println(e.getMessage());
             }
         }
-        return false;    }
+        return false;
+    }
 
     @Override
     public void loadFromDatabase(Connection connection, Object... args) {
@@ -160,6 +164,31 @@ public class Flight implements Persistable{
                 ", aircraft=" + aircraftReg +
                 ", date='" + date + '\'' +
                 '}';
+    }
+
+    public static Vector<Flight> getFlightVector(Connection connection) {
+        Vector<Flight> flights = new Vector<>();
+        String sql = "SELECT * FROM flights";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                int fid = rs.getInt("fid");
+                String flightNumber = rs.getString("flight_number");
+                String type = rs.getString("type");
+                int eta = rs.getInt("eta");
+                int etd = rs.getInt("etd");
+                String origin = rs.getString("origin");
+                String destination = rs.getString("destination");
+                String notes = rs.getString("notes");
+                String aircraftRegistration = rs.getString("aircraft_registration");
+                String date = rs.getString("date");
+                flights.add(new Flight(fid, flightNumber, type, eta, etd, origin, destination, notes, aircraftRegistration, date));
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return flights;
     }
 
     public int getFid() {

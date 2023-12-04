@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 
-public class LoginScreen {
+public class LoginWindow {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
@@ -20,7 +20,7 @@ public class LoginScreen {
 
     private User currentUser;
 
-    public LoginScreen() {
+    public LoginWindow() {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -55,7 +55,7 @@ public class LoginScreen {
             if(currentUser.getUserType().equals("admin")) {
                 usernameField.setText("");
                 passwordField.setText("");
-                new AdminHomeScreen(mainFrame, conn, currentUser);
+                new AdminHomeWindow(mainFrame, conn, currentUser);
                 usernameField.requestFocusInWindow();
             } else if (currentUser.getUserType().equals("ground")) {
 
