@@ -120,12 +120,12 @@ public class AdminHomeWindow {
     private void loadUsers() {
         users = User.getUserVector(conn);
         userList.setListData(users);
-//        userList.setCellRenderer();
     }
 
     private void loadFlights() {
         flights = Flight.getFlightVector(conn);
         flightList.setListData(flights);
+        flightList.setCellRenderer(new FlightRenderer());
     }
 
     private void removeUser(User userToRemove) {
