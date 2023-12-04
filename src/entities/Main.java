@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.sql.*;
 
 public class Main {
@@ -7,8 +8,8 @@ public class Main {
         Connection conn = getDBConnection();
         User user = new User();
         user.loadFromDatabase(conn, "Mr. Stark");
-        LoginWindow mainApp = new LoginWindow();
-//        AdminHomeScreen adm = new AdminHomeScreen(new JFrame(""), conn, user);
+//        LoginWindow mainApp = new LoginWindow();
+        AdminHomeWindow adm = new AdminHomeWindow(new JFrame(""), conn, user, "fl");
 //        ConsoleApp.run(getDBConnection());
 
     }

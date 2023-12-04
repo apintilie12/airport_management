@@ -109,6 +109,31 @@ public class AdminHomeWindow {
                 previousFrame.setVisible(true);
             }
         });
+        addFlightButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Flight nf = new Flight();
+                NewFlightDialog dialog = new NewFlightDialog(conn, nf);
+                dialog.pack();
+                dialog.setLocationRelativeTo(null);
+                dialog.setMinimumSize(new Dimension(310, 310));
+                dialog.setVisible(true);
+                if(nf.getFlightNumber() != null) {
+                    nf.saveToDatabase(conn);
+                    flights.add(nf);
+                    flightList.setListData(flights);
+                }
+            }
+        });
+    }
+
+    public AdminHomeWindow(JFrame previousFrame, Connection conn, User currentUser, String defaultTab) {
+        this(previousFrame, conn, currentUser);
+        if(defaultTab.equals("usr")) {
+            tabbedPane1.setSelectedIndex(0);
+        } else if(defaultTab.equals("fl")) {
+            tabbedPane1.setSelectedIndex(1);
+        }
     }
 
     private void init() {

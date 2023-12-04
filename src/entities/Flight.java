@@ -21,6 +21,8 @@ public class Flight implements Persistable {
 
     public Flight() {
         this.fid = -1;
+        this.flightNumber = null;
+        this.type = null;
     }
 
     public Flight(int fid, String flightNumber, String type, int eta, int etd, String origin, String destination, String notes, String aircraft, String date) {
@@ -193,6 +195,26 @@ public class Flight implements Persistable {
 
     public int getFid() {
         return fid;
+    }
+
+    public void setFid(int fid) {
+        this.fid = fid;
+    }
+
+    public void setFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
     public void setEta(int eta) {

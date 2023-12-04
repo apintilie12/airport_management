@@ -4,7 +4,9 @@ import java.util.Objects;
 
 public class FlightRenderer extends JLabel implements ListCellRenderer<Flight>{
 
-    public FlightRenderer(){}
+    public FlightRenderer(){
+        setOpaque(true);
+    }
     @Override
     public Component getListCellRendererComponent(JList<? extends Flight> list, Flight value, int index, boolean isSelected, boolean cellHasFocus) {
         String text;
@@ -20,6 +22,13 @@ public class FlightRenderer extends JLabel implements ListCellRenderer<Flight>{
         }
         this.setIcon(img);
         this.setText(text);
+        if (isSelected) {
+            setBackground(list.getSelectionBackground());
+            setForeground(list.getSelectionForeground());
+        } else {
+            setBackground(list.getBackground());
+            setForeground(list.getForeground());
+        }
         return this;
     }
 }
