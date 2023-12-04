@@ -18,7 +18,9 @@ public class AdminHomeScreen {
     private JButton newUserButton;
     private JButton editUserButton;
     private JButton removeUserButton;
+    private JButton logoutButton;
     private JFrame currentFrame;
+    private JFrame previousFrame;
     private User user;
     private final Connection conn;
 
@@ -28,7 +30,9 @@ public class AdminHomeScreen {
     public AdminHomeScreen(JFrame previousFrame, Connection conn, User currentUser) {
         this.user = currentUser;
         this.conn = conn;
-        previousFrame.dispose();
+        this.previousFrame = previousFrame;
+        this.previousFrame.setVisible(false);
+
 
         currentFrame = new JFrame("AMS");
         currentFrame.setFocusable(true);
@@ -71,7 +75,7 @@ public class AdminHomeScreen {
             @Override
             public void actionPerformed(ActionEvent e) {
                 List<User> selectedValuesList = userList.getSelectedValuesList();
-                for(User usr : selectedValuesList) {
+                for (User usr : selectedValuesList) {
                     removeUser(usr);
                     users.remove(usr);
                 }
@@ -82,15 +86,23 @@ public class AdminHomeScreen {
             @Override
             public void actionPerformed(ActionEvent e) {
                 List<User> selectedValuesList = userList.getSelectedValuesList();
-                if(selectedValuesList.size() > 1) {
+                if (selectedValuesList.size() > 1) {
                     JOptionPane.showMessageDialog(currentFrame, "Cannot edit multiple users simultaneously!", "ERROR", JOptionPane.ERROR_MESSAGE);
-                } else if(selectedValuesList.size() == 1) {
+                } else if (selectedValuesList.size() == 1) {
                     EditUserDialog dialog = new EditUserDialog(conn, selectedValuesList.get(0));
                     dialog.pack();
                     dialog.setLocationRelativeTo(null);
                     dialog.setVisible(true);
                     selectedValuesList.get(0).saveToDatabase(conn);
+                    loadUsers();
                 }
+            }
+        });
+        logoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                currentFrame.dispose();
+                previousFrame.setVisible(true);
             }
         });
     }
@@ -120,5 +132,4 @@ public class AdminHomeScreen {
             System.out.println(e.getMessage());
         }
     }
-
 }

@@ -40,6 +40,8 @@ public class LoginScreen {
         mainFrame.setMinimumSize(new Dimension(500, 500));
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
+        usernameField.requestFocusInWindow();
+        mainFrame.setFocusTraversalPolicy(new LayoutFocusTraversalPolicy());
         mainFrame.setVisible(true);
         conn = Main.getDBConnection();
         SwingUtilities.getRootPane(loginButton).setDefaultButton(loginButton);
@@ -51,7 +53,10 @@ public class LoginScreen {
         try {
             login();
             if(currentUser.getUserType().equals("admin")) {
+                usernameField.setText("");
+                passwordField.setText("");
                 new AdminHomeScreen(mainFrame, conn, currentUser);
+                usernameField.requestFocusInWindow();
             } else if (currentUser.getUserType().equals("ground")) {
 
             } else {
@@ -63,6 +68,7 @@ public class LoginScreen {
             errorLabel.setForeground(Color.RED);
             usernameField.setText("");
             passwordField.setText("");
+            usernameField.requestFocusInWindow();
         }
     }
 
