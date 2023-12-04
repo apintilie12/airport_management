@@ -120,11 +120,34 @@ public class AdminHomeWindow {
                 dialog.setVisible(true);
                 if(nf.getFlightNumber() != null) {
                     nf.saveToDatabase(conn);
+                    nf.loadFromDatabase(conn, nf.getFlightNumber());
                     flights.add(nf);
                     flightList.setListData(flights);
                 }
             }
         });
+        removeFlightButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<Flight> selectedValuesList = flightList.getSelectedValuesList();
+                for (Flight fl : selectedValuesList) {
+                    removeFlight(fl);
+                    flights.remove(fl);
+                }
+                flightList.setListData(flights);
+            }
+        });
+    }
+
+    private void removeFlight(Flight fl) {
+        String sql = "DELETE FROM flights WHERE fid = ?";
+        try {
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, fl.getFid());
+            statement.execute();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public AdminHomeWindow(JFrame previousFrame, Connection conn, User currentUser, String defaultTab) {
