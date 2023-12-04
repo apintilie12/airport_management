@@ -9,11 +9,11 @@ public class Flight {
     private final String origin;
     private final String destination;
     private String notes;
-    private int aircraftId;
+    private String aircraftReg;
 
     private String date;
 
-    public Flight(int fid, String flightNumber, char type, int eta, int etd, String origin, String destination, String notes, int aircraft, String date) {
+    public Flight(int fid, String flightNumber, char type, int eta, int etd, String origin, String destination, String notes, String aircraft, String date) {
         this.fid = fid;
         this.flightNumber = flightNumber;
         this.type = type;
@@ -22,7 +22,7 @@ public class Flight {
         this.origin = origin;
         this.destination = destination;
         this.notes = notes;
-        this.aircraftId = aircraft;
+        this.aircraftReg = aircraft;
         this.date = date;
     }
 
@@ -37,7 +37,7 @@ public class Flight {
                 ", origin='" + origin + '\'' +
                 ", destination='" + destination + '\'' +
                 ", notes='" + notes + '\'' +
-                ", aircraft=" + aircraftId +
+                ", aircraft=" + aircraftReg +
                 ", date='" + date + '\'' +
                 '}';
     }
@@ -58,8 +58,8 @@ public class Flight {
         this.notes = notes;
     }
 
-    public void setAircraftId(int aircraftId) {
-        this.aircraftId = aircraftId;
+    public void setAircraftReg(String aircraftReg) {
+        this.aircraftReg = aircraftReg;
     }
 
     public String getFlightNumber() {
@@ -90,8 +90,8 @@ public class Flight {
         return notes;
     }
 
-    public int getAircraftId() {
-        return aircraftId;
+    public String getAircraftReg() {
+        return aircraftReg;
     }
 
     public String getDate() {

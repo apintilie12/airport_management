@@ -3,14 +3,14 @@ public class Passenger {
     private final String firstName;
     private final String lastName;
     private String phoneNumber;
-    private final Flight flight;
+    private final int flightId;
 
-    public Passenger(int pid, String firstName, String lastName, String phoneNumber, Flight flight) {
+    public Passenger(int pid, String firstName, String lastName, String phoneNumber, int flight) {
         this.pid = pid;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
-        this.flight = flight;
+        this.flightId = flight;
     }
 
     @Override
@@ -20,7 +20,7 @@ public class Passenger {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", flight=" + flight +
+                ", flight=" + flightId +
                 '}';
     }
 
@@ -44,7 +44,7 @@ public class Passenger {
         return phoneNumber;
     }
 
-    public Flight getFlight() {
-        return flight;
+    public int getFlightId() {
+        return flightId;
     }
 }
