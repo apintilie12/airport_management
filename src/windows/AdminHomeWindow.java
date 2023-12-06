@@ -178,6 +178,25 @@ public class AdminHomeWindow {
                 }
             }
         });
+        userList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if(e.getClickCount() == 2){
+                    List<User> selectedValuesList = userList.getSelectedValuesList();
+                    if (selectedValuesList.size() > 1) {
+                        JOptionPane.showMessageDialog(currentFrame, "Cannot edit multiple users simultaneously!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    } else if (selectedValuesList.size() == 1) {
+                        EditUserDialog dialog = new EditUserDialog(conn, selectedValuesList.get(0));
+                        dialog.pack();
+                        dialog.setLocationRelativeTo(null);
+                        dialog.setVisible(true);
+                        selectedValuesList.get(0).saveToDatabase(conn);
+                        loadUsers();
+                    }
+                }
+            }
+        });
     }
 
     private void removeFlight(Flight fl) {
@@ -209,6 +228,7 @@ public class AdminHomeWindow {
     private void loadUsers() {
         users = User.getUserVector(conn);
         userList.setListData(users);
+        userList.setCellRenderer(new UserRenderer());
     }
 
     private void loadFlights() {

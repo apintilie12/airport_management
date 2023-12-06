@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.Objects;
 
@@ -22,6 +23,8 @@ public class FlightRenderer extends JLabel implements ListCellRenderer<Flight>{
         }
         this.setIcon(img);
         this.setText(text);
+        this.setVerticalTextPosition(CENTER);
+        this.setBorder(new EmptyBorder(5, 5, 5, 0));
         if (isSelected) {
             setBackground(list.getSelectionBackground());
             setForeground(list.getSelectionForeground());

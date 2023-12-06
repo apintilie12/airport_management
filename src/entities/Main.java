@@ -9,10 +9,10 @@ public class Main {
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
         Connection conn = getDBConnection();
         setAppWideFontSize(14);
-        User user = new User();
-        user.loadFromDatabase(conn, "Mr. Stark");
-//        LoginWindow mainApp = new LoginWindow();
-        AdminHomeWindow adm = new AdminHomeWindow(new JFrame(""), conn, user, "fl");
+//        User user = new User();
+//        user.loadFromDatabase(conn, "Mr. Stark");
+        LoginWindow mainApp = new LoginWindow();
+//        AdminHomeWindow adm = new AdminHomeWindow(new JFrame(""), conn, user, "fl");
 //        ConsoleApp.run(getDBConnection());
 
     }
