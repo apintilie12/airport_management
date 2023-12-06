@@ -83,10 +83,10 @@ public class NewFlightDialog extends JDialog {
         boolean arrSelected = arrivalRadioButton.isSelected();
         if(flightNo.isEmpty()) {
             warningLabel.setText("Flight Number cannot be empty!");
-        } else if(time.isEmpty()) {
-            warningLabel.setText((arrSelected ? "ETA" : "ETD") + " cannot be empty!");
         } else if(city.isEmpty()) {
             warningLabel.setText((arrSelected ? "Origin" : "Destination") + " cannot be empty!");
+        } else if(time.isEmpty()) {
+            warningLabel.setText((arrSelected ? "ETA" : "ETD") + " cannot be empty!");
         } else if(aircraftReg.isEmpty()) {
             warningLabel.setText("Aircraft Registration cannot be empty!");
         } else if(date.isEmpty()) {
