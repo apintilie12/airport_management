@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
+import java.awt.*;
 import java.sql.*;
 
 public class Main {
@@ -6,11 +8,27 @@ public class Main {
         System.out.println("Hello world!");
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
         Connection conn = getDBConnection();
+        setAppWideFontSize(14);
         User user = new User();
         user.loadFromDatabase(conn, "Mr. Stark");
 //        LoginWindow mainApp = new LoginWindow();
         AdminHomeWindow adm = new AdminHomeWindow(new JFrame(""), conn, user, "fl");
 //        ConsoleApp.run(getDBConnection());
+
+    }
+
+    private static void setAppWideFontSize(int size) {
+        UIDefaults defaults = UIManager.getDefaults();
+
+        // Iterate over all keys and update the font size for Font values
+        for (Object key : defaults.keySet()) {
+            Object value = defaults.get(key);
+
+            if (value instanceof FontUIResource fontUIResource) {
+                Font newFont = fontUIResource.deriveFont((float) size);
+                defaults.put(key, new FontUIResource(newFont));
+            }
+        }
 
     }
 

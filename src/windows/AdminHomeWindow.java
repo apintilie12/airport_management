@@ -4,6 +4,8 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Vector;
@@ -42,7 +44,7 @@ public class AdminHomeWindow {
         currentFrame.setFocusable(true);
         currentFrame.setContentPane(content);
         currentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        currentFrame.setMinimumSize(new Dimension(600, 600));
+        currentFrame.setMinimumSize(new Dimension(800, 800));
         currentFrame.pack();
         currentFrame.setLocationRelativeTo(null);
 
@@ -135,6 +137,45 @@ public class AdminHomeWindow {
                     flights.remove(fl);
                 }
                 flightList.setListData(flights);
+            }
+        });
+        editFlightButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<Flight> selectedValuesList = flightList.getSelectedValuesList();
+                if (selectedValuesList.size() > 1) {
+                    JOptionPane.showMessageDialog(currentFrame, "Cannot edit multiple flights simultaneously!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                } else if (selectedValuesList.size() == 1) {
+                    EditFlightDialog dialog = new EditFlightDialog(conn, selectedValuesList.get(0));
+                    dialog.pack();
+                    dialog.setLocationRelativeTo(null);
+                    dialog.setVisible(true);
+                    dialog.setMinimumSize(new Dimension(300, 400));
+                    selectedValuesList.get(0).saveToDatabase(conn);
+                    loadFlights();
+                }
+            }
+        });
+        userList.addMouseListener(new MouseAdapter() {
+        });
+        flightList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if(e.getClickCount() == 2) {
+                    List<Flight> selectedValuesList = flightList.getSelectedValuesList();
+                    if (selectedValuesList.size() > 1) {
+                        JOptionPane.showMessageDialog(currentFrame, "Cannot edit multiple flights simultaneously!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    } else if (selectedValuesList.size() == 1) {
+                        EditFlightDialog dialog = new EditFlightDialog(conn, selectedValuesList.get(0));
+                        dialog.pack();
+                        dialog.setLocationRelativeTo(null);
+                        dialog.setVisible(true);
+                        dialog.setMinimumSize(new Dimension(300, 400));
+                        selectedValuesList.get(0).saveToDatabase(conn);
+                        loadFlights();
+                    }
+                }
             }
         });
     }
