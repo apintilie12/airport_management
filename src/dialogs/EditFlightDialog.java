@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.Connection;
+import java.util.List;
+import java.util.Vector;
 
 public class EditFlightDialog extends JDialog {
     private JPanel contentPane;
@@ -19,8 +21,10 @@ public class EditFlightDialog extends JDialog {
     private JLabel cityLabel;
     private JTextField cityField;
     private Flight flightToEdit;
+    private Connection connection;
 
     public EditFlightDialog(Connection conn, Flight flightToEdit) {
+        this.connection = conn;
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -106,6 +110,26 @@ public class EditFlightDialog extends JDialog {
         } else if(date.isEmpty()) {
             warningLabel.setText("Date cannot be empty!");
         } else {
+            Aircraft air = new Aircraft();
+            air.setAircraftRegistration(aircraftReg);
+            air.setType(null);
+            if(!air.isInDatabase(connection, aircraftReg)) {
+                int option = JOptionPane.showConfirmDialog(null, "No aircraft in database with registration " + aircraftReg + "!\nWould you like to create it?");
+                if(option == 0) {
+                    EditAircraftDialog dialog = new EditAircraftDialog(connection, air);
+                    dialog.pack();
+                    dialog.setLocationRelativeTo(null);
+                    dialog.setMinimumSize(new Dimension(310, 310));
+                    dialog.setVisible(true);
+                    if(air.getAid() == 0) {
+                        air.saveToDatabase(connection);
+                    } else if(air.getAid() == -1){
+                        return;
+                    }
+                } else {
+                    return;
+                }
+            }
             flightToEdit.setFlightNumber(flightNo);
             flightToEdit.setAircraftReg(aircraftReg);
             flightToEdit.setNotes(notes.isEmpty() ? null : notes);

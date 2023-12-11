@@ -1,35 +1,32 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.RescaleOp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.Vector;
 
-public class NewAircraftDialog extends JDialog {
+public class EditAircraftDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
     private JTextField aircraftRegField;
     private JTextField notesField;
-    private JComboBox<String> typeBox;
+    private JComboBox typeBox;
     private JLabel warningLabel;
-
     private Connection conn;
-    private Aircraft aircraft;
-    private String types;
+    private Aircraft air;
 
-    public NewAircraftDialog(Connection conn, Aircraft aircraft) {
-        this.conn = conn;
-        this.aircraft = aircraft;
+    public EditAircraftDialog(Connection connection, Aircraft air) {
+        this.conn = connection;
+        this.air = air;
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
-        warningLabel.setForeground(Color.RED);
         getTypes();
-
+        aircraftRegField.setText(air.getAircraftRegistration());
+        typeBox.setSelectedItem(air.getType());
+        notesField.setText(air.getNotes() == null ? "" : air.getNotes());
+        warningLabel.setForeground(Color.RED);
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onOK();
@@ -69,7 +66,7 @@ public class NewAircraftDialog extends JDialog {
             statement.close();
 
 
-        } catch (Exception e) {
+        } catch(Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -82,20 +79,17 @@ public class NewAircraftDialog extends JDialog {
         if(aircraftRegistration.isEmpty()) {
             warningLabel.setText("Aircraft Registration cannot be empty!");
         } else {
-            aircraft.setAircraftRegistration(aircraftRegistration);
-            aircraft.setType(type);
-            aircraft.setNotes(notes.isEmpty() ? null : notes);
-            if(aircraft.isInDatabase(conn, aircraftRegistration)) {
-                warningLabel.setText("Aircraft already in database!");
-            } else {
-                dispose();
-            }
+            air.setAircraftRegistration(aircraftRegistration);
+            air.setType(type);
+            air.setNotes(notes.isEmpty() ? null : notes);
+            air.setAid(0);
+            dispose();
         }
     }
 
     private void onCancel() {
         // add your code here if necessary
-        aircraft.setAircraftRegistration(null);
+        air.setAid(-1);
         dispose();
     }
 }

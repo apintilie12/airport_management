@@ -19,6 +19,7 @@ public class NewFlightDialog extends JDialog {
     private JLabel warningLabel;
     private JTextField dateField;
     private Flight fl;
+    private Connection connection;
 
     public NewFlightDialog(Connection conn, Flight newFlight) {
         setContentPane(contentPane);
@@ -29,6 +30,7 @@ public class NewFlightDialog extends JDialog {
         cityLabel.setText("Origin:");
         fl = newFlight;
         warningLabel.setForeground(Color.RED);
+        this.connection = conn;
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -92,6 +94,26 @@ public class NewFlightDialog extends JDialog {
         } else if(date.isEmpty()) {
             warningLabel.setText("Date cannot be empty!");
         } else {
+            Aircraft air = new Aircraft();
+            air.setAircraftRegistration(aircraftReg);
+            air.setType(null);
+            if(!air.isInDatabase(connection, aircraftReg)) {
+                int option = JOptionPane.showConfirmDialog(null, "No aircraft in database with registration " + aircraftReg + "!\nWould you like to create it?");
+                if(option == 0) {
+                    EditAircraftDialog dialog = new EditAircraftDialog(connection, air);
+                    dialog.pack();
+                    dialog.setLocationRelativeTo(null);
+                    dialog.setMinimumSize(new Dimension(310, 310));
+                    dialog.setVisible(true);
+                    if(air.getAid() == 0) {
+                        air.saveToDatabase(connection);
+                    } else if(air.getAid() == -1){
+                        return;
+                    }
+                } else {
+                    return;
+                }
+            }
             fl.setFlightNumber(flightNo);
             fl.setAircraftReg(aircraftReg);
             fl.setNotes(notes.isEmpty() ? null : notes);
@@ -112,6 +134,7 @@ public class NewFlightDialog extends JDialog {
             dispose();
         }
     }
+
 
     private void onCancel() {
         // add your code here if necessary

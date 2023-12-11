@@ -17,6 +17,7 @@ public class Aircraft implements Persistable {
 
     public Aircraft() {
         this.aid = -1;
+        this.aircraftRegistration = null;
     }
 
     public Aircraft(int aid, String aircraftRegistration, String type, int paxCapacity, int holdCapacity, String notes) {

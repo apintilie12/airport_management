@@ -181,8 +181,43 @@ public class AdminHomeWindow {
                 dialog.setLocationRelativeTo(null);
                 dialog.setMinimumSize(new Dimension(310, 310));
                 dialog.setVisible(true);
+                if(newAircraft.getAircraftRegistration() != null){
+                    newAircraft.saveToDatabase(conn);
+                    newAircraft.loadFromDatabase(conn, newAircraft.getAircraftRegistration());
+                    aircraft.add(newAircraft);
+                    aircraftList.setListData(aircraft);
+                }
             }
         });
+        editAircraftButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                editAircraft();
+            }
+        });
+        aircraftList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if(e.getClickCount() == 2) {
+                    editAircraft();
+                }
+            }
+        });
+    }
+
+    private void editAircraft() {
+        List<Aircraft> selectedValuesList = aircraftList.getSelectedValuesList();
+        if(selectedValuesList.size() > 1) {
+            JOptionPane.showMessageDialog(currentFrame, "Cannot edit multiple aircraft simultaneously!", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }  else if (selectedValuesList.size() == 1) {
+            EditAircraftDialog dialog = new EditAircraftDialog(conn, selectedValuesList.get(0));
+            dialog.pack();
+            dialog.setLocationRelativeTo(null);
+            dialog.setVisible(true);
+            selectedValuesList.get(0).saveToDatabase(conn);
+            loadAircraft();
+        }
     }
 
     private void editUser() {
