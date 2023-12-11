@@ -25,6 +25,10 @@ public class AdminHomeWindow {
     private JButton addFlightButton;
     private JButton editFlightButton;
     private JButton removeFlightButton;
+    private JButton newAircraftButton;
+    private JButton editAircraftButton;
+    private JButton removeAircraftButton;
+    private JList aircraftList;
     private JFrame currentFrame;
     private JFrame previousFrame;
     private User user;
@@ -32,6 +36,7 @@ public class AdminHomeWindow {
 
     private Vector<User> users;
     private Vector<Flight> flights;
+    private Vector<Aircraft> aircraft;
 
     public AdminHomeWindow(JFrame previousFrame, Connection conn, User currentUser) {
         this.user = currentUser;
@@ -56,8 +61,10 @@ public class AdminHomeWindow {
             public void stateChanged(ChangeEvent e) {
                 if (tabbedPane1.getSelectedIndex() == 0) {
                     loadUsers();
-                } else {
+                } else if(tabbedPane1.getSelectedIndex() == 1){
                     loadFlights();
+                } else {
+                    loadAircraft();
                 }
             }
         });
@@ -91,17 +98,7 @@ public class AdminHomeWindow {
         editUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                List<User> selectedValuesList = userList.getSelectedValuesList();
-                if (selectedValuesList.size() > 1) {
-                    JOptionPane.showMessageDialog(currentFrame, "Cannot edit multiple users simultaneously!", "ERROR", JOptionPane.ERROR_MESSAGE);
-                } else if (selectedValuesList.size() == 1) {
-                    EditUserDialog dialog = new EditUserDialog(conn, selectedValuesList.get(0));
-                    dialog.pack();
-                    dialog.setLocationRelativeTo(null);
-                    dialog.setVisible(true);
-                    selectedValuesList.get(0).saveToDatabase(conn);
-                    loadUsers();
-                }
+                editUser();
             }
         });
         logoutButton.addActionListener(new ActionListener() {
@@ -142,39 +139,16 @@ public class AdminHomeWindow {
         editFlightButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                List<Flight> selectedValuesList = flightList.getSelectedValuesList();
-                if (selectedValuesList.size() > 1) {
-                    JOptionPane.showMessageDialog(currentFrame, "Cannot edit multiple flights simultaneously!", "ERROR", JOptionPane.ERROR_MESSAGE);
-                } else if (selectedValuesList.size() == 1) {
-                    EditFlightDialog dialog = new EditFlightDialog(conn, selectedValuesList.get(0));
-                    dialog.pack();
-                    dialog.setLocationRelativeTo(null);
-                    dialog.setVisible(true);
-                    dialog.setMinimumSize(new Dimension(300, 400));
-                    selectedValuesList.get(0).saveToDatabase(conn);
-                    loadFlights();
-                }
+                editFlight();
             }
         });
-        userList.addMouseListener(new MouseAdapter() {
-        });
+
         flightList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 if(e.getClickCount() == 2) {
-                    List<Flight> selectedValuesList = flightList.getSelectedValuesList();
-                    if (selectedValuesList.size() > 1) {
-                        JOptionPane.showMessageDialog(currentFrame, "Cannot edit multiple flights simultaneously!", "ERROR", JOptionPane.ERROR_MESSAGE);
-                    } else if (selectedValuesList.size() == 1) {
-                        EditFlightDialog dialog = new EditFlightDialog(conn, selectedValuesList.get(0));
-                        dialog.pack();
-                        dialog.setLocationRelativeTo(null);
-                        dialog.setVisible(true);
-                        dialog.setMinimumSize(new Dimension(300, 400));
-                        selectedValuesList.get(0).saveToDatabase(conn);
-                        loadFlights();
-                    }
+                    editFlight();
                 }
             }
         });
@@ -183,21 +157,63 @@ public class AdminHomeWindow {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 if(e.getClickCount() == 2){
-                    List<User> selectedValuesList = userList.getSelectedValuesList();
-                    if (selectedValuesList.size() > 1) {
-                        JOptionPane.showMessageDialog(currentFrame, "Cannot edit multiple users simultaneously!", "ERROR", JOptionPane.ERROR_MESSAGE);
-                    } else if (selectedValuesList.size() == 1) {
-                        EditUserDialog dialog = new EditUserDialog(conn, selectedValuesList.get(0));
-                        dialog.pack();
-                        dialog.setLocationRelativeTo(null);
-                        dialog.setVisible(true);
-                        selectedValuesList.get(0).saveToDatabase(conn);
-                        loadUsers();
-                    }
+                    editUser();
                 }
             }
         });
+        removeAircraftButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<Aircraft> selectedValuesList = aircraftList.getSelectedValuesList();
+                for (Aircraft air : selectedValuesList) {
+                    removeAircraft(air);
+                    aircraft.remove(air);
+                }
+                aircraftList.setListData(aircraft);
+            }
+        });
+        newAircraftButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Aircraft newAircraft = new Aircraft();
+                NewAircraftDialog dialog = new NewAircraftDialog(conn, newAircraft);
+                dialog.pack();
+                dialog.setLocationRelativeTo(null);
+                dialog.setMinimumSize(new Dimension(310, 310));
+                dialog.setVisible(true);
+            }
+        });
     }
+
+    private void editUser() {
+        List<User> selectedValuesList = userList.getSelectedValuesList();
+        if (selectedValuesList.size() > 1) {
+            JOptionPane.showMessageDialog(currentFrame, "Cannot edit multiple users simultaneously!", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } else if (selectedValuesList.size() == 1) {
+            EditUserDialog dialog = new EditUserDialog(conn, selectedValuesList.get(0));
+            dialog.pack();
+            dialog.setLocationRelativeTo(null);
+            dialog.setVisible(true);
+            selectedValuesList.get(0).saveToDatabase(conn);
+            loadUsers();
+        }
+    }
+
+    private void editFlight(){//Connection conn) {
+        List<Flight> selectedValuesList = flightList.getSelectedValuesList();
+        if (selectedValuesList.size() > 1) {
+            JOptionPane.showMessageDialog(currentFrame, "Cannot edit multiple flights simultaneously!", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } else if (selectedValuesList.size() == 1) {
+            EditFlightDialog dialog = new EditFlightDialog(conn, selectedValuesList.get(0));
+            dialog.pack();
+            dialog.setLocationRelativeTo(null);
+            dialog.setVisible(true);
+            dialog.setMinimumSize(new Dimension(300, 400));
+            selectedValuesList.get(0).saveToDatabase(conn);
+            loadFlights();
+        }
+    }
+
 
     private void removeFlight(Flight fl) {
         String sql = "DELETE FROM flights WHERE fid = ?";
@@ -205,6 +221,31 @@ public class AdminHomeWindow {
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, fl.getFid());
             statement.execute();
+            statement.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void removeUser(User userToRemove) {
+        String sql = "DELETE FROM users WHERE uid = ?";
+        try {
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, userToRemove.getUid());
+            statement.execute();
+            statement.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void removeAircraft(Aircraft aircraftToRemove) {
+        String sql = "DELETE FROM aircraft WHERE aid = ?";
+        try {
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, aircraftToRemove.getAid());
+            statement.execute();
+            statement.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -216,6 +257,8 @@ public class AdminHomeWindow {
             tabbedPane1.setSelectedIndex(0);
         } else if(defaultTab.equals("fl")) {
             tabbedPane1.setSelectedIndex(1);
+        } else if(defaultTab.equals("air")) {
+            tabbedPane1.setSelectedIndex(2);
         }
     }
 
@@ -237,14 +280,11 @@ public class AdminHomeWindow {
         flightList.setCellRenderer(new FlightRenderer());
     }
 
-    private void removeUser(User userToRemove) {
-        String sql = "DELETE FROM users WHERE uid = ?";
-        try {
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1, userToRemove.getUid());
-            statement.execute();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+    private void loadAircraft() {
+        aircraft = Aircraft.getAircraftVector(conn);
+        aircraftList.setListData(aircraft);
+        aircraftList.setCellRenderer(new AircraftRenderer());
     }
+
+
 }

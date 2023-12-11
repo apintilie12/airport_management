@@ -5,14 +5,14 @@ import java.sql.*;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
-        System.out.println("Working Directory = " + System.getProperty("user.dir"));
+//        System.out.println("Hello world!");
+//        System.out.println("Working Directory = " + System.getProperty("user.dir"));
         Connection conn = getDBConnection();
         setAppWideFontSize(14);
-//        User user = new User();
-//        user.loadFromDatabase(conn, "Mr. Stark");
-        LoginWindow mainApp = new LoginWindow();
-//        AdminHomeWindow adm = new AdminHomeWindow(new JFrame(""), conn, user, "fl");
+        User user = new User();
+        user.loadFromDatabase(conn, "Mr. Stark");
+//        LoginWindow mainApp = new LoginWindow();
+        AdminHomeWindow adm = new AdminHomeWindow(new JFrame(""), conn, user, "air");
 //        ConsoleApp.run(getDBConnection());
 
     }

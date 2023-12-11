@@ -1,6 +1,7 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Vector;
 
 public class Aircraft implements Persistable {
 
@@ -8,6 +9,7 @@ public class Aircraft implements Persistable {
     private int aid;
     private String aircraftRegistration;
     private String type;
+    private String manufacturer;
     private int paxCapacity;
     private int holdCapacity;
     private String notes;
@@ -29,29 +31,25 @@ public class Aircraft implements Persistable {
     @Override
     public void saveToDatabase(Connection connection) {
         if (!isInDatabase(connection)) {
-            String sql = "INSERT INTO aircraft (aircraft_registration, type, pax_capacity, hold_capacity, notes) VALUES(?, ?, ?, ?, ?);";
+            String sql = "INSERT INTO aircraft (aircraft_registration, notes, type_id) VALUES(?, ?, (SELECT id FROM aircraft_type WHERE name = ?));";
             try {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setString(1, this.aircraftRegistration);
-                statement.setString(2, this.type);
-                statement.setInt(3, this.paxCapacity);
-                statement.setInt(4, this.holdCapacity);
-                statement.setString(5, this.notes);
+                statement.setString(2, this.notes);
+                statement.setString(3, this.type);
                 statement.execute();
                 statement.close();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         } else {
-            String sql = "UPDATE aircraft SET aircraft_registration = ?, type = ?, pax_capacity = ?, hold_capacity = ?, notes = ? WHERE aid = ?";
+            String sql = "UPDATE aircraft SET aircraft_registration = ?, notes = ?, type_id = (SELECT id FROM aircraft_type WHERE name = ?) WHERE aid = ?";
             try {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setString(1, this.aircraftRegistration);
-                statement.setString(2, this.type);
-                statement.setInt(3, this.paxCapacity);
-                statement.setInt(4, this.holdCapacity);
-                statement.setString(5, this.notes);
-                statement.setInt(6, this.aid);
+                statement.setString(2, this.notes);
+                statement.setString(3, this.type);
+                statement.setInt(4, this.aid);
                 statement.execute();
                 statement.close();
 
@@ -108,7 +106,7 @@ public class Aircraft implements Persistable {
     @Override
     public void loadFromDatabase(Connection connection, Object... args) {
         if (args.length > 0) {
-            String sql = "SELECT * FROM aircraft WHERE aircraft_registration = ?";
+            String sql = "SELECT * FROM airplanes WHERE aircraft_registration = ?";
             try {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setString(1, (String) args[0]);
@@ -117,6 +115,7 @@ public class Aircraft implements Persistable {
                     this.aid = rs.getInt("aid");
                     this.aircraftRegistration = rs.getString("aircraft_registration");
                     this.type = rs.getString("type");
+                    this.manufacturer = rs.getString("manufacturer");
                     this.paxCapacity = rs.getInt("pax_capacity");
                     this.holdCapacity = rs.getInt("hold_capacity");
                     this.notes = rs.getString("notes");
@@ -128,6 +127,28 @@ public class Aircraft implements Persistable {
         }
     }
 
+    public static Vector<Aircraft> getAircraftVector(Connection connection) {
+        Vector<Aircraft> airplanes = new Vector<>();
+        String sql = "SELECT * FROM airplanes";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                int aid = rs.getInt("aid");
+                String aircraftRegistration = rs.getString("aircraft_registration");
+                String notes = rs.getString("notes");
+                String type = rs.getString("type");
+                int paxCapacity = rs.getInt("pax_capacity");
+                int holdCapacity = rs.getInt("hold_capacity");
+                airplanes.add(new Aircraft(aid, aircraftRegistration, type, paxCapacity, holdCapacity, notes));
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return airplanes;
+    }
+
+
     @Override
     public String toString() {
         return "Aircraft{" + "aid=" + aid + ", aircraftRegistration='" + aircraftRegistration + '\'' + ", type='" + type + '\'' + ", paxCapacity=" + paxCapacity + ", holdCapacity=" + holdCapacity + ", notes='" + notes + '\'' + '}';
@@ -136,6 +157,14 @@ public class Aircraft implements Persistable {
 
     public int getAid() {
         return aid;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
     }
 
     public String getAircraftRegistration() {
