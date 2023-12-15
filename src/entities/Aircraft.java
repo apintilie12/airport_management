@@ -1,6 +1,8 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class Aircraft implements Persistable {
@@ -13,7 +15,7 @@ public class Aircraft implements Persistable {
     private int paxCapacity;
     private int holdCapacity;
     private String notes;
-
+    private ArrayList<Baggage> baggageList;
 
     public Aircraft() {
         this.aid = -1;
@@ -27,10 +29,15 @@ public class Aircraft implements Persistable {
         this.paxCapacity = paxCapacity;
         this.holdCapacity = holdCapacity;
         this.notes = notes;
+        this.baggageList = new ArrayList<Baggage>();
     }
 
     @Override
     public void saveToDatabase(Connection connection) {
+        for(Baggage b : this.baggageList) {
+            b.saveToDatabase(connection);
+        }
+        baggageList.clear();
         if (!isInDatabase(connection)) {
             String sql = "INSERT INTO aircraft (aircraft_registration, notes, type_id) VALUES(?, ?, (SELECT id FROM aircraft_type WHERE name = ?));";
             try {
@@ -213,4 +220,33 @@ public class Aircraft implements Persistable {
     public void setHoldCapacity(int holdCapacity) {
         this.holdCapacity = holdCapacity;
     }
+
+    public void addBaggage(Baggage baggage) {
+        this.baggageList.add(baggage);
+    }
+
+    public void loadBaggage(Connection connection) {
+        if(this.isInDatabase(connection)) {
+            String sql = "SELECT * FROM baggage WHERE fid = (SELECT fid FROM flights WHERE aircraft_registration = ? LIMIT 1)";
+            try {
+                PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setString(1, this.aircraftRegistration);
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    int bid = rs.getInt("bid");
+                    int weight = rs.getInt("weight");
+                    String category = rs.getString("category");
+                    int pid = rs.getInt("pid");
+                    int fid = rs.getInt("fid");
+                    this.baggageList.add(new Baggage(bid, weight, category, pid, fid));
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        } else {
+
+        }
+    }
 }
+
+

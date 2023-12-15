@@ -16,13 +16,14 @@ public class Flight implements Persistable {
     private String destination;
     private String notes;
     private String aircraftReg;
-
     private String date;
+    private ArrayList<Passenger> passengers;
 
     public Flight() {
         this.fid = -1;
         this.flightNumber = null;
         this.type = null;
+        this.passengers = new ArrayList<>();
     }
 
     public Flight(int fid, String flightNumber, String type, int eta, int etd, String origin, String destination, String notes, String aircraft, String date) {
@@ -36,11 +37,16 @@ public class Flight implements Persistable {
         this.notes = notes;
         this.aircraftReg = aircraft;
         this.date = date;
+        this.passengers = new ArrayList<>();
     }
 
     @Override
     public void saveToDatabase(Connection connection) {
-        if (!isInDatabase(connection)) {
+        for(Passenger p : passengers) {
+            p.saveToDatabase(connection);
+        }
+        passengers.clear();
+        if(!isInDatabase(connection)) {
             String sql = "INSERT INTO flights (flight_number, type, eta, etd, origin, destination, notes, aircraft_registration, date) VALUES(?, ?, ?, ?, ? ,? ,? ,? ,?);";
             try {
                 PreparedStatement statement = connection.prepareStatement(sql);
@@ -55,7 +61,7 @@ public class Flight implements Persistable {
                 statement.setString(9, this.date);
                 statement.execute();
                 statement.close();
-            } catch (Exception e) {
+            } catch(Exception e) {
                 System.out.println(e.getMessage());
             }
         } else {
@@ -75,7 +81,7 @@ public class Flight implements Persistable {
                 statement.execute();
                 statement.close();
 
-            } catch (Exception e) {
+            } catch(Exception e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -83,7 +89,7 @@ public class Flight implements Persistable {
 
     @Override
     public boolean isInDatabase(Connection connection) {
-        if (fid == -1) {
+        if(fid == -1) {
             return false;
         }
         String sql = "SELECT fid FROM flights WHERE fid = ?;";
@@ -91,13 +97,13 @@ public class Flight implements Persistable {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, this.fid);
             ResultSet rs = statement.executeQuery();
-            if (rs.next()) {
-                if (rs.getInt("fid") == this.fid) {
+            if(rs.next()) {
+                if(rs.getInt("fid") == this.fid) {
                     return true;
                 }
             }
             statement.close();
-        } catch (Exception e) {
+        } catch(Exception e) {
             System.out.println(e.getMessage());
         }
         return false;
@@ -105,20 +111,20 @@ public class Flight implements Persistable {
 
     @Override
     public boolean isInDatabase(Connection connection, Object... args) {
-        if (args.length > 0) {
+        if(args.length > 0) {
             String sql = "SELECT flight_number FROM flights WHERE flight_number = ?;";
             try {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setString(1, (String) args[0]);
                 ResultSet rs = statement.executeQuery();
-                if (rs.next()) {
-                    if (rs.getString("flight_number").equals((String) args[0])) {
+                if(rs.next()) {
+                    if(rs.getString("flight_number").equals((String) args[0])) {
                         statement.close();
                         return true;
                     }
                 }
                 statement.close();
-            } catch (Exception e) {
+            } catch(Exception e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -127,13 +133,13 @@ public class Flight implements Persistable {
 
     @Override
     public void loadFromDatabase(Connection connection, Object... args) {
-        if (args.length > 0) {
+        if(args.length > 0) {
             String sql = "SELECT * FROM flights WHERE flight_number = ?";
             try {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setString(1, (String) args[0]);
                 ResultSet rs = statement.executeQuery();
-                if (rs.next()) {
+                if(rs.next()) {
                     this.fid = rs.getInt("fid");
                     this.flightNumber = rs.getString("flight_number");
                     this.type = rs.getString("type");
@@ -146,7 +152,7 @@ public class Flight implements Persistable {
                     this.date = rs.getString("date");
                 }
                 statement.close();
-            } catch (Exception e) {
+            } catch(Exception e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -174,7 +180,7 @@ public class Flight implements Persistable {
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
+            while(rs.next()) {
                 int fid = rs.getInt("fid");
                 String flightNumber = rs.getString("flight_number");
                 String type = rs.getString("type");
@@ -187,11 +193,36 @@ public class Flight implements Persistable {
                 String date = rs.getString("date");
                 flights.add(new Flight(fid, flightNumber, type, eta, etd, origin, destination, notes, aircraftRegistration, date));
             }
-        } catch (Exception e) {
+        } catch(Exception e) {
             System.out.println(e.getMessage());
         }
         return flights;
     }
+
+    public void addPassenger(Passenger passenger) {
+        this.passengers.add(passenger);
+    }
+
+    public void loadPassengers(Connection conn) {
+        if(this.isInDatabase(conn)) {
+            try {
+                String sql = "SELECT * FROM passengers WHERE fid = ?";
+                PreparedStatement statement = conn.prepareStatement(sql);
+                statement.setInt(1, this.fid);
+                ResultSet rs = statement.executeQuery();
+                while(rs.next()) {
+                    int pid = rs.getInt("pid");
+                    String firstName = rs.getString("first_name");
+                    String lastName = rs.getString("last_name");
+                    String phoneNo = rs.getString("phone_number");
+                    passengers.add(new Passenger(pid, firstName, lastName, phoneNo, this.fid));
+                }
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
 
     public int getFid() {
         return fid;

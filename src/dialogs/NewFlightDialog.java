@@ -83,31 +83,32 @@ public class NewFlightDialog extends JDialog {
         String city = cityField.getText();
         String date = dateField.getText();
         boolean arrSelected = arrivalRadioButton.isSelected();
-        if(flightNo.isEmpty()) {
+        if (flightNo.isEmpty()) {
             warningLabel.setText("Flight Number cannot be empty!");
-        } else if(city.isEmpty()) {
+        } else if (city.isEmpty()) {
             warningLabel.setText((arrSelected ? "Origin" : "Destination") + " cannot be empty!");
-        } else if(time.isEmpty()) {
+        } else if (time.isEmpty()) {
             warningLabel.setText((arrSelected ? "ETA" : "ETD") + " cannot be empty!");
-        } else if(aircraftReg.isEmpty()) {
+        } else if (aircraftReg.isEmpty()) {
             warningLabel.setText("Aircraft Registration cannot be empty!");
-        } else if(date.isEmpty()) {
+        } else if (date.isEmpty()) {
             warningLabel.setText("Date cannot be empty!");
         } else {
             Aircraft air = new Aircraft();
             air.setAircraftRegistration(aircraftReg);
             air.setType(null);
-            if(!air.isInDatabase(connection, aircraftReg)) {
+            if (!air.isInDatabase(connection, aircraftReg)) {
                 int option = JOptionPane.showConfirmDialog(null, "No aircraft in database with registration " + aircraftReg + "!\nWould you like to create it?");
-                if(option == 0) {
+                if (option == 0) {
                     EditAircraftDialog dialog = new EditAircraftDialog(connection, air);
                     dialog.pack();
                     dialog.setLocationRelativeTo(null);
                     dialog.setMinimumSize(new Dimension(310, 310));
+                    dialog.requestFocus();
                     dialog.setVisible(true);
-                    if(air.getAid() == 0) {
+                    if (air.getAid() == 0) {
                         air.saveToDatabase(connection);
-                    } else if(air.getAid() == -1){
+                    } else if (air.getAid() == -1) {
                         return;
                     }
                 } else {
@@ -118,7 +119,7 @@ public class NewFlightDialog extends JDialog {
             fl.setAircraftReg(aircraftReg);
             fl.setNotes(notes.isEmpty() ? null : notes);
             fl.setDate(date);
-            if(arrSelected) {
+            if (arrSelected) {
                 fl.setType("ARRIVAL");
                 fl.setEta(Integer.parseInt(time));
                 fl.setOrigin(city);

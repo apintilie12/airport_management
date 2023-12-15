@@ -52,15 +52,14 @@ public class LoginWindow {
         password = new String(passwordField.getPassword());
         try {
             login();
-            if(currentUser.getUserType().equals("admin") || currentUser.getUserType().equals("ADMIN")) {
-                usernameField.setText("");
-                passwordField.setText("");
+            usernameField.setText("");
+            passwordField.setText("");
+            if (currentUser.getUserType().equals("admin") || currentUser.getUserType().equals("ADMIN")) {
                 new AdminHomeWindow(mainFrame, conn, currentUser);
                 usernameField.requestFocusInWindow();
-            } else if (currentUser.getUserType().equals("ground") || currentUser.getUserType().equals("GROUND")) {
-
             } else {
-
+                new WorkerHomeWindow(mainFrame, conn, currentUser.getUserType(), currentUser);
+                usernameField.requestFocusInWindow();
             }
         } catch (Exception exc) {
             errorLabel.setText("Invalid username or password!");

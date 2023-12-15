@@ -61,7 +61,7 @@ public class AdminHomeWindow {
             public void stateChanged(ChangeEvent e) {
                 if (tabbedPane1.getSelectedIndex() == 0) {
                     loadUsers();
-                } else if(tabbedPane1.getSelectedIndex() == 1){
+                } else if (tabbedPane1.getSelectedIndex() == 1) {
                     loadFlights();
                 } else {
                     loadAircraft();
@@ -117,7 +117,7 @@ public class AdminHomeWindow {
                 dialog.setLocationRelativeTo(null);
                 dialog.setMinimumSize(new Dimension(310, 310));
                 dialog.setVisible(true);
-                if(nf.getFlightNumber() != null) {
+                if (nf.getFlightNumber() != null) {
                     nf.saveToDatabase(conn);
                     nf.loadFromDatabase(conn, nf.getFlightNumber());
                     flights.add(nf);
@@ -147,7 +147,7 @@ public class AdminHomeWindow {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if(e.getClickCount() == 2) {
+                if (e.getClickCount() == 2) {
                     editFlight();
                 }
             }
@@ -156,7 +156,7 @@ public class AdminHomeWindow {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if(e.getClickCount() == 2){
+                if (e.getClickCount() == 2) {
                     editUser();
                 }
             }
@@ -181,7 +181,7 @@ public class AdminHomeWindow {
                 dialog.setLocationRelativeTo(null);
                 dialog.setMinimumSize(new Dimension(310, 310));
                 dialog.setVisible(true);
-                if(newAircraft.getAircraftRegistration() != null){
+                if (newAircraft.getAircraftRegistration() != null) {
                     newAircraft.saveToDatabase(conn);
                     newAircraft.loadFromDatabase(conn, newAircraft.getAircraftRegistration());
                     aircraft.add(newAircraft);
@@ -199,7 +199,7 @@ public class AdminHomeWindow {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if(e.getClickCount() == 2) {
+                if (e.getClickCount() == 2) {
                     editAircraft();
                 }
             }
