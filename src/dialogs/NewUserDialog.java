@@ -71,7 +71,7 @@ public class NewUserDialog extends JDialog {
             }
             newUser.setUsername(username);
             newUser.setPassword(pwd);
-            newUser.setUserType(userType);
+            newUser.setUserType(UserType.valueOf(userType));
             dispose();
         }
     }

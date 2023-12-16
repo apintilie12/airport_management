@@ -1,7 +1,6 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Vector;
 
 public class User implements Persistable {
@@ -9,16 +8,16 @@ public class User implements Persistable {
     private int uid;
     private String username;
     private String password;
-    private String userType;
+    private UserType userType;
 
-    public User(int uid, String username, String password, String userType) {
+    public User(int uid, String username, String password, UserType userType) {
         this.uid = uid;
         this.username = username;
         this.password = password;
         this.userType = userType;
     }
 
-    public User(String username, String password, String userType) {
+    public User(String username, String password, UserType userType) {
         this.username = username;
         this.password = password;
         this.userType = userType;
@@ -49,7 +48,7 @@ public class User implements Persistable {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setString(1, this.username);
                 statement.setString(2, this.password);
-                statement.setString(3, this.userType);
+                statement.setString(3, this.userType.name());
                 statement.execute();
                 statement.close();
             } catch (Exception e) {
@@ -61,7 +60,7 @@ public class User implements Persistable {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setString(1, this.username);
                 statement.setString(2, this.password);
-                statement.setString(3, this.userType);
+                statement.setString(3, this.userType.name());
                 statement.setInt(4, this.uid);
                 statement.execute();
 
@@ -127,7 +126,7 @@ public class User implements Persistable {
                     this.uid = rs.getInt("uid");
                     this.username = rs.getString("username");
                     this.password = rs.getString("password");
-                    this.userType = rs.getString("user_type");
+                    this.userType = UserType.valueOf(rs.getString("user_type"));
                 }
                 statement.close();
             } catch (Exception e) {
@@ -146,7 +145,7 @@ public class User implements Persistable {
                 int uid = rs.getInt("uid");
                 String username = rs.getString("username");
                 String password = rs.getString("password");
-                String userType = rs.getString("user_type");
+                UserType userType = UserType.valueOf(rs.getString("user_type"));
                 vector.add(new User(uid, username, password, userType));
             }
         } catch (Exception e) {
@@ -163,7 +162,7 @@ public class User implements Persistable {
         this.password = password;
     }
 
-    public void setUserType(String userType) {
+    public void setUserType(UserType userType) {
         this.userType = userType;
     }
 
@@ -179,7 +178,7 @@ public class User implements Persistable {
         return password;
     }
 
-    public String getUserType() {
+    public UserType getUserType() {
         return userType;
     }
 }

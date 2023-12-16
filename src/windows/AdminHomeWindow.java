@@ -310,7 +310,7 @@ public class AdminHomeWindow {
     }
 
     private void loadFlights() {
-        flights = Flight.getFlightVector(conn);
+        flights = Flight.getFlightVector(conn, "both");
         flightList.setListData(flights);
         flightList.setCellRenderer(new FlightRenderer());
     }

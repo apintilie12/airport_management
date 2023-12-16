@@ -8,6 +8,7 @@ public class Baggage implements Persistable {
     private String category;
     private int pid;
     private int fid;
+    private String ownerName;
 
     public Baggage() {
         this.bid = -1;
@@ -95,6 +96,13 @@ public class Baggage implements Persistable {
                 this.fid = rs.getInt("fid");
             }
             statement.close();
+            sql = "SELECT first_name, last_name FROM passengers JOIN main.baggage b on passengers.pid = b.pid WHERE b.bid = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, bid);
+            rs = statement.executeQuery();
+            if(rs.next()) {
+                this.ownerName = rs.getString("first_name") + " " + rs.getString("last_name");
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -106,6 +114,7 @@ public class Baggage implements Persistable {
                 "bid=" + bid +
                 ", weight=" + weight +
                 ", category='" + category + '\'' +
+                ", owner='" + ownerName + '\'' +
                 '}';
     }
 
@@ -149,4 +158,11 @@ public class Baggage implements Persistable {
         return category;
     }
 
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
 }

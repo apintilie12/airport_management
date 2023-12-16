@@ -5,7 +5,17 @@ import java.sql.*;
 
 public class Main {
     public static void main(String[] args) {
-//        System.out.println("Hello world!");
+        normalRun();
+//        test();
+    }
+
+    private static void test() {
+        UserType usr = UserType.ADMIN;
+        System.out.println(usr.name());
+    }
+
+    private static void normalRun() {
+        //        System.out.println("Hello world!");
 //        System.out.println("Working Directory = " + System.getProperty("user.dir"));
         Connection conn = getDBConnection();
         setAppWideFontSize(14);
@@ -14,7 +24,6 @@ public class Main {
         LoginWindow mainApp = new LoginWindow();
 //        AdminHomeWindow adm = new AdminHomeWindow(new JFrame(""), conn, user, "air");
 //        ConsoleApp.run(getDBConnection());
-
     }
 
     private static void setAppWideFontSize(int size) {

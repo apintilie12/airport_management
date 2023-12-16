@@ -1,7 +1,7 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.Vector;
 
 public class Flight implements Persistable {
@@ -17,13 +17,15 @@ public class Flight implements Persistable {
     private String notes;
     private String aircraftReg;
     private String date;
-    private ArrayList<Passenger> passengers;
+    private Vector<Passenger> passengers;
+    private Vector<Baggage> baggages;
 
     public Flight() {
         this.fid = -1;
         this.flightNumber = null;
         this.type = null;
-        this.passengers = new ArrayList<>();
+        this.passengers = new Vector<>();
+        this.baggages = new Vector<>();
     }
 
     public Flight(int fid, String flightNumber, String type, int eta, int etd, String origin, String destination, String notes, String aircraft, String date) {
@@ -37,7 +39,8 @@ public class Flight implements Persistable {
         this.notes = notes;
         this.aircraftReg = aircraft;
         this.date = date;
-        this.passengers = new ArrayList<>();
+        this.passengers = new Vector<>();
+        this.baggages = new Vector<>();
     }
 
     @Override
@@ -45,7 +48,11 @@ public class Flight implements Persistable {
         for(Passenger p : passengers) {
             p.saveToDatabase(connection);
         }
+        for(Baggage b : baggages) {
+            b.saveToDatabase(connection);
+        }
         passengers.clear();
+        baggages.clear();
         if(!isInDatabase(connection)) {
             String sql = "INSERT INTO flights (flight_number, type, eta, etd, origin, destination, notes, aircraft_registration, date) VALUES(?, ?, ?, ?, ? ,? ,? ,? ,?);";
             try {
@@ -174,9 +181,17 @@ public class Flight implements Persistable {
                 '}';
     }
 
-    public static Vector<Flight> getFlightVector(Connection connection) {
+    public static Vector<Flight> getFlightVector(Connection connection, String flightType) {
         Vector<Flight> flights = new Vector<>();
-        String sql = "SELECT * FROM flights";
+        String sql;
+        if(flightType.equals("both")) {
+            sql = "SELECT * FROM flights";
+        } else if(flightType.equals("arrival")) {
+            sql = "SELECT * FROM flights WHERE type = 'ARRIVAL' ";
+        } else {
+            sql = "SELECT * FROM flights WHERE type = 'DEPARTURE' ";
+        }
+
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
@@ -223,6 +238,38 @@ public class Flight implements Persistable {
         }
     }
 
+    public void addBaggage(Baggage baggage) {
+        this.baggages.add(baggage);
+    }
+
+    public void loadBaggages(Connection conn) {
+        if(this.isInDatabase(conn)) {
+            String sql = "SELECT * FROM baggage WHERE fid = ?";
+            try {
+                PreparedStatement statement = conn.prepareStatement(sql);
+                statement.setInt(1, this.fid);
+                ResultSet rs = statement.executeQuery();
+                while(rs.next()) {
+                    int bid = rs.getInt("bid");
+                    int weight = rs.getInt("weight");
+                    String category = rs.getString("category");
+                    int pid = rs.getInt("pid");
+                    int fid = rs.getInt("fid");
+                    this.baggages.add(new Baggage(bid, weight, category, pid, fid));
+                }
+            } catch(SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    public Vector<Passenger> getPassengers() {
+        return this.passengers;
+    }
+
+    public Vector<Baggage> getBaggages() {
+        return baggages;
+    }
 
     public int getFid() {
         return fid;

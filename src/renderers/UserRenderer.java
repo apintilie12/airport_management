@@ -1,7 +1,6 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.Objects;
 
 public class UserRenderer extends JLabel implements ListCellRenderer<User>{
 
@@ -13,9 +12,9 @@ public class UserRenderer extends JLabel implements ListCellRenderer<User>{
 //        String text = String.format("USERNAME: %-25s TYPE: %s", value.getUsername(), value.getUserType());
         String text = "USERNAME: " + value.getUsername() + " TYPE: " + value.getUserType();
         ImageIcon img;
-        if(value.getUserType().equals("admin") || value.getUserType().equals("ADMIN")) {
+        if(value.getUserType() == UserType.ADMIN) {
             img = new ImageIcon("res/admin.png");
-        } else if(value.getUserType().equals("ground") || value.getUserType().equals("GROUND")) {
+        } else if(value.getUserType() == UserType.GROUND) {
             img = new ImageIcon("res/ground.png");
         } else {
             img = new ImageIcon("res/checkin.png");

@@ -20,6 +20,7 @@ public class Aircraft implements Persistable {
     public Aircraft() {
         this.aid = -1;
         this.aircraftRegistration = null;
+        this.baggageList = new ArrayList<>();
     }
 
     public Aircraft(int aid, String aircraftRegistration, String type, int paxCapacity, int holdCapacity, String notes) {
@@ -243,8 +244,6 @@ public class Aircraft implements Persistable {
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
-        } else {
-
         }
     }
 }

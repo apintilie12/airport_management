@@ -1,6 +1,5 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -125,10 +124,10 @@ public class ConsoleApp {
 
         System.out.println("User type:");
         consolePrompt();
-        String userType = inp.nextLine();
+//        UserType userType = inp.nextLine();
 
-        User user = new User(username, password, userType);
-        user.saveToDatabase(conn);
+//        User user = new User(username, password, userType);
+//        user.saveToDatabase(conn);
 
     }
 
@@ -196,7 +195,7 @@ public class ConsoleApp {
                     case "3":
                         System.out.println("Enter new user type:");
                         consolePrompt();
-                        newUser.setUserType(inp.nextLine());
+//                        newUser.setUserType(inp.nextLine());
                         break;
                     case "4":
                         newUser.saveToDatabase(conn);

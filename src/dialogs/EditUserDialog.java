@@ -19,7 +19,7 @@ public class EditUserDialog extends JDialog {
         this.user = user;
         usernameField.setText(user.getUsername());
         passwordField.setText(user.getPassword());
-        userTypeField.setText(user.getUserType());
+        userTypeField.setText(user.getUserType().name());
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -66,7 +66,7 @@ public class EditUserDialog extends JDialog {
         } else {
             user.setUsername(username);
             user.setPassword(pwd);
-            user.setUserType(userType);
+            user.setUserType(UserType.valueOf(userType));
             dispose();
         }
     }

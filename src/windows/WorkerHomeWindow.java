@@ -14,11 +14,11 @@ public class WorkerHomeWindow extends JFrame {
     private Vector<Persistable> items;
     private Connection conn;
     private JFrame previousFrame;
-    private String mode;
+    private UserType mode;
     private JFrame currentFrame;
     private User currentUser;
 
-    WorkerHomeWindow(JFrame previousFrame, Connection conn, String mode, User currentUser) {
+    WorkerHomeWindow(JFrame previousFrame, Connection conn, UserType mode, User currentUser) {
         this.conn = conn;
         this.previousFrame = previousFrame;
         this.mode = mode;
@@ -76,12 +76,14 @@ public class WorkerHomeWindow extends JFrame {
         if(selectedItems.size() > 1) {
             JOptionPane.showMessageDialog(currentFrame, "Cannot open multiple items simultaneously!", "ERROR", JOptionPane.ERROR_MESSAGE);
         } else if(selectedItems.size() == 1) {
-            if(mode.equals("ground") || mode.equals("GROUND")) {
+            if(mode == UserType.GROUND) {
                 //TODO
                 System.out.println("Did ground interaction");
             } else {
                 //TODO
                 System.out.println("Did checkin interaction");
+                Flight flight = (Flight) selectedItems.get(0);
+                FlightManifestWindow fm = new FlightManifestWindow(this.currentFrame, conn, flight);
             }
         }
     }
@@ -112,7 +114,7 @@ public class WorkerHomeWindow extends JFrame {
 
     private void init() {
         welcomeLabel.setText("Currently logged in as: " + currentUser.getUsername());
-        if(mode.equals("ground") || mode.equals("GROUND")) {
+        if(mode == UserType.GROUND) {
             openItemButton.setText("Open aircraft load window");
             loadAircraft();
         } else {
@@ -122,7 +124,7 @@ public class WorkerHomeWindow extends JFrame {
     }
 
     private void loadFlights() {
-        Vector<Flight> flights = Flight.getFlightVector(conn);
+        Vector<Flight> flights = Flight.getFlightVector(conn, "departure");
         for(Flight fl : flights) {
             items.add((Persistable) fl);
         }

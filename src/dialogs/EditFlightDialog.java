@@ -141,7 +141,7 @@ public class EditFlightDialog extends JDialog {
                 flightToEdit.setEtd(-1);
                 flightToEdit.setDestination(null);
             } else {
-                flightToEdit.setType("DESTINATION");
+                flightToEdit.setType("DEPARTURE");
                 flightToEdit.setEtd(Integer.parseInt(time));
                 flightToEdit.setDestination(city);
                 flightToEdit.setEta(-1);
