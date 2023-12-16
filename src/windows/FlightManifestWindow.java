@@ -1,10 +1,10 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
+import java.beans.PropertyChangeListener;
 import java.sql.Connection;
 
 public class FlightManifestWindow {
@@ -18,24 +18,25 @@ public class FlightManifestWindow {
     private JButton addBaggageButton;
     private JButton removeBaggageButton;
     private JList<Baggage> baggageList;
+    private JLabel paxCapLabel;
+    private JLabel bagCapLabel;
     private JFrame previousFrame;
     private Connection connection;
     private Flight flight;
     private JFrame currentFrame;
+    private int cargoFill;
 
 
     FlightManifestWindow(JFrame previousFrame, Connection connection, Flight flight) {
         this.previousFrame = previousFrame;
         this.connection = connection;
         this.flight = flight;
+        cargoFill = 0;
         previousFrame.setVisible(false);
-        this.flight.loadBaggages(connection);
-        this.flight.loadPassengers(connection);
+        updatePassengers();
+        updateBaggages();
 
-        passengerList.setListData(flight.getPassengers());
         passengerList.setCellRenderer(new PassengerRenderer());
-
-        baggageList.setListData(flight.getBaggages());
         baggageList.setCellRenderer(new BaggageRenderer());
 
         infoLabel.setText("Flight manifest for: " + flight.getFlightNumber());
@@ -67,6 +68,40 @@ public class FlightManifestWindow {
             }
         });
 
+        tabbedPane1.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if(tabbedPane1.getSelectedIndex() == 0) {
+                    updatePassengers();
+                } else {
+                    updateBaggages();
+                }
+            }
+        });
+    }
+
+    private void updateBaggages() {
+        flight.loadBaggages(connection);
+        baggageList.setListData(flight.getBaggages());
+        cargoFill = 0;
+        for(Baggage b : flight.getBaggages()) {
+            cargoFill += b.getWeight();
+        }
+        updateBagsLabel();
+    }
+
+    private void updatePassengers() {
+        flight.loadPassengers(connection);
+        passengerList.setListData(flight.getPassengers());
+        updatePaxLabel();
+    }
+
+    private void updatePaxLabel() {
+        paxCapLabel.setText("Filled seats: " + passengerList.getModel().getSize() + "/" + flight.getMaxPax());
+    }
+
+    private void updateBagsLabel() {
+        bagCapLabel.setText("Cargo hold fill: " + cargoFill + "/" + flight.getMaxBags() + " KG");
     }
 
     private void exit() {

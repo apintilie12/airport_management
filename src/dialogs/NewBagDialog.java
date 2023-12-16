@@ -1,28 +1,12 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
-import java.sql.Connection;
 
-public class EditUserDialog extends JDialog {
+public class NewBagDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
-    private JTextField usernameField;
-    private JPasswordField passwordField;
-    private JLabel warningLabel;
-    private JComboBox<String> userTypeBox;
-    private Connection conn;
-    private User user;
 
-    public EditUserDialog(Connection conn, User user) {
-        this.conn = conn;
-        this.user = user;
-        usernameField.setText(user.getUsername());
-        passwordField.setText(user.getPassword());
-        for(UserType u : UserType.values()) {
-            userTypeBox.addItem(u.name());
-        }
-        userTypeBox.setSelectedItem(user.getUserType().name());
+    public NewBagDialog() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -56,20 +40,8 @@ public class EditUserDialog extends JDialog {
     }
 
     private void onOK() {
-        String username = usernameField.getText();
-        String pwd = new String(passwordField.getPassword());
-        String userType = (String) userTypeBox.getSelectedItem();
-        warningLabel.setForeground(Color.RED);
-        if (username.isEmpty()) {
-            warningLabel.setText("Username cannot be empty!");
-        } else if (pwd.isEmpty()) {
-            warningLabel.setText("Password cannot be empty!");
-        } else {
-            user.setUsername(username);
-            user.setPassword(pwd);
-            user.setUserType(UserType.valueOf(userType));
-            dispose();
-        }
+        // add your code here
+        dispose();
     }
 
     private void onCancel() {

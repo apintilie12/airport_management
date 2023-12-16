@@ -11,7 +11,7 @@ public class NewUserDialog extends JDialog {
     private JPasswordField passwordField;
     private JPasswordField confirmPasswordField;
     private JLabel warningLabel;
-    private JTextField userTypeField;
+    private JComboBox<String> userTypeBox;
     private User newUser;
     private Connection conn;
 
@@ -21,6 +21,10 @@ public class NewUserDialog extends JDialog {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
+
+        for(UserType u : UserType.values()) {
+            userTypeBox.addItem(u.name());
+        }
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -54,14 +58,14 @@ public class NewUserDialog extends JDialog {
         String username = usernameTextField.getText();
         String pwd = new String(passwordField.getPassword());
         String confirmPwd = new String(confirmPasswordField.getPassword());
-        String userType = userTypeField.getText();
+        String userType = (String) userTypeBox.getSelectedItem();
         warningLabel.setForeground(Color.RED);
         if (username.isEmpty()) {
             warningLabel.setText("Username cannot be empty!");
         } else if (pwd.isEmpty()) {
             warningLabel.setText("Password cannot be empty!");
-        } else if (userType.isEmpty()) {
-            warningLabel.setText("User type cannot be empty!");
+//        } else if (userType.isEmpty()) {
+//            warningLabel.setText("User type cannot be empty!");
         } else if (!pwd.equals(confirmPwd)) {
             warningLabel.setText("Passwords do not match!");
         } else {

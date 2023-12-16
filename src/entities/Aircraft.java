@@ -236,7 +236,7 @@ public class Aircraft implements Persistable {
                 while (rs.next()) {
                     int bid = rs.getInt("bid");
                     int weight = rs.getInt("weight");
-                    String category = rs.getString("category");
+                    BaggageType category = BaggageType.valueOf(rs.getString("category"));
                     int pid = rs.getInt("pid");
                     int fid = rs.getInt("fid");
                     this.baggageList.add(new Baggage(bid, weight, category, pid, fid));

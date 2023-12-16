@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 public class Baggage implements Persistable {
     private int bid;
     private int weight;
-    private String category;
+    private BaggageType type;
     private int pid;
     private int fid;
     private String ownerName;
@@ -14,10 +14,10 @@ public class Baggage implements Persistable {
         this.bid = -1;
     }
 
-    public Baggage(int bid, int weight, String category, int pid, int fid) {
+    public Baggage(int bid, int weight, BaggageType type, int pid, int fid) {
         this.bid = bid;
         this.weight = weight;
-        this.category = category;
+        this.type = type;
         this.pid = pid;
         this.fid = fid;
     }
@@ -29,7 +29,7 @@ public class Baggage implements Persistable {
             try {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setInt(1, this.weight);
-                statement.setString(2, this.category);
+                statement.setString(2, this.type.name());
                 statement.setInt(3, this.pid);
                 statement.setInt(4, fid);
                 statement.execute();
@@ -42,7 +42,7 @@ public class Baggage implements Persistable {
             try {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setInt(1, this.weight);
-                statement.setString(2, this.category);
+                statement.setString(2, this.type.name());
                 statement.setInt(3, this.pid);
                 statement.setInt(4, fid);
                 statement.setInt(5, this.bid);
@@ -91,7 +91,7 @@ public class Baggage implements Persistable {
             if (rs.next()) {
                 this.bid = rs.getInt("bid");
                 this.weight = rs.getInt("weight");
-                this.category = rs.getString("category");
+                this.type = BaggageType.valueOf(rs.getString("category"));
                 this.pid = rs.getInt("pid");
                 this.fid = rs.getInt("fid");
             }
@@ -103,6 +103,7 @@ public class Baggage implements Persistable {
             if(rs.next()) {
                 this.ownerName = rs.getString("first_name") + " " + rs.getString("last_name");
             }
+            statement.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -113,7 +114,7 @@ public class Baggage implements Persistable {
         return "Baggage{" +
                 "bid=" + bid +
                 ", weight=" + weight +
-                ", category='" + category + '\'' +
+                ", category='" + type + '\'' +
                 ", owner='" + ownerName + '\'' +
                 '}';
     }
@@ -126,8 +127,8 @@ public class Baggage implements Persistable {
         this.weight = weight;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setType(BaggageType type) {
+        this.type = type;
     }
 
     public int getPid() {
@@ -154,8 +155,8 @@ public class Baggage implements Persistable {
         return weight;
     }
 
-    public String getCategory() {
-        return category;
+    public BaggageType getType() {
+        return type;
     }
 
     public String getOwnerName() {

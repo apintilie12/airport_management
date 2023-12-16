@@ -12,10 +12,12 @@ public class BaggageRenderer extends JLabel implements ListCellRenderer<Baggage>
 
         String text = "OWNER: " + value.getOwnerName() + " WEIGHT: " + value.getWeight() + " KG";
         ImageIcon img;
-        if(value.getCategory().equals("HOLD")) {
+        if(value.getType() == BaggageType.HOLD) {
             img = new ImageIcon("res/hold.png");
-        } else {
+        } else if(value.getType() == BaggageType.CABIN) {
             img = new ImageIcon("res/cabin.png");
+        } else {
+            img = new ImageIcon("res/heavy.png");
         }
         this.setText(text);
         this.setIcon(img);

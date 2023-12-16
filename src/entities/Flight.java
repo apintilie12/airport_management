@@ -17,6 +17,8 @@ public class Flight implements Persistable {
     private String notes;
     private String aircraftReg;
     private String date;
+    private int maxPax;
+    private int maxBags;
     private Vector<Passenger> passengers;
     private Vector<Baggage> baggages;
 
@@ -159,6 +161,15 @@ public class Flight implements Persistable {
                     this.date = rs.getString("date");
                 }
                 statement.close();
+                sql = "SELECT pax_capacity, hold_capacity FROM airplanes WHERE aircraft_registration = ?";
+                statement = connection.prepareStatement(sql);
+                statement.setString(1, aircraftReg);
+                rs = statement.executeQuery();
+                if(rs.next()) {
+                    this.maxPax = rs.getInt("pax_capacity");
+                    this.maxBags = rs.getInt("hold_capacity");
+                }
+                statement.close();
             } catch(Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -206,7 +217,17 @@ public class Flight implements Persistable {
                 String notes = rs.getString("notes");
                 String aircraftRegistration = rs.getString("aircraft_registration");
                 String date = rs.getString("date");
-                flights.add(new Flight(fid, flightNumber, type, eta, etd, origin, destination, notes, aircraftRegistration, date));
+                Flight fl = new Flight(fid, flightNumber, type, eta, etd, origin, destination, notes, aircraftRegistration, date);
+                sql = "SELECT pax_capacity, hold_capacity FROM airplanes WHERE aircraft_registration = ?";
+                PreparedStatement secondStatement = connection.prepareStatement(sql);
+                secondStatement.setString(1, aircraftRegistration);
+                ResultSet secondRs = secondStatement.executeQuery();
+                if(secondRs.next()) {
+                    fl.setMaxPax(secondRs.getInt("pax_capacity"));
+                    fl.setMaxBags(secondRs.getInt("hold_capacity"));
+                }
+                secondStatement.close();
+                flights.add(fl);
             }
         } catch(Exception e) {
             System.out.println(e.getMessage());
@@ -220,6 +241,7 @@ public class Flight implements Persistable {
 
     public void loadPassengers(Connection conn) {
         if(this.isInDatabase(conn)) {
+            passengers.clear();
             try {
                 String sql = "SELECT * FROM passengers WHERE fid = ?";
                 PreparedStatement statement = conn.prepareStatement(sql);
@@ -243,6 +265,7 @@ public class Flight implements Persistable {
     }
 
     public void loadBaggages(Connection conn) {
+        baggages.clear();
         if(this.isInDatabase(conn)) {
             String sql = "SELECT * FROM baggage WHERE fid = ?";
             try {
@@ -252,11 +275,21 @@ public class Flight implements Persistable {
                 while(rs.next()) {
                     int bid = rs.getInt("bid");
                     int weight = rs.getInt("weight");
-                    String category = rs.getString("category");
+                    BaggageType type = BaggageType.valueOf(rs.getString("category"));
                     int pid = rs.getInt("pid");
                     int fid = rs.getInt("fid");
-                    this.baggages.add(new Baggage(bid, weight, category, pid, fid));
+                    Baggage baggage = new Baggage(bid, weight, type, pid, fid);
+                    sql = "SELECT first_name, last_name FROM passengers JOIN main.baggage b on passengers.pid = b.pid WHERE b.bid = ?";
+                    PreparedStatement secondStatement = conn.prepareStatement(sql);
+                    secondStatement.setInt(1, bid);
+                    ResultSet secondRs = secondStatement.executeQuery();
+                    if(secondRs.next()) {
+                        baggage.setOwnerName(secondRs.getString("first_name") + " " + secondRs.getString("last_name"));
+                    }
+                    secondStatement.close();
+                    this.baggages.add(baggage);
                 }
+                statement.close();
             } catch(SQLException e) {
                 System.out.println(e.getMessage());
             }
@@ -351,4 +384,19 @@ public class Flight implements Persistable {
         this.date = date;
     }
 
+    public int getMaxPax() {
+        return maxPax;
+    }
+
+    public void setMaxPax(int maxPax) {
+        this.maxPax = maxPax;
+    }
+
+    public int getMaxBags() {
+        return maxBags;
+    }
+
+    public void setMaxBags(int maxBags) {
+        this.maxBags = maxBags;
+    }
 }
