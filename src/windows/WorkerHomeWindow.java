@@ -89,27 +89,11 @@ public class WorkerHomeWindow extends JFrame {
     }
 
     private void askSaveChanges(boolean quitOnExit) {
-        int option = JOptionPane.showConfirmDialog(null, "Save changes?");
-        if(option == 2) {
-            return;
-        }
-        if(option == 0) {
-//            saveChanges();
-            System.out.println("Saved changes");
-        } else if(option == 1) {
-            System.out.println("Didn't save changes");
-        }
         if(quitOnExit) {
             System.exit(0);
         }
         previousFrame.setVisible(true);
         currentFrame.dispose();
-    }
-
-    private void saveChanges() {
-        for(Persistable p : items) {
-            p.saveToDatabase(conn);
-        }
     }
 
     private void init() {

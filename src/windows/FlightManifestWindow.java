@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeListener;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.util.List;
 
 public class FlightManifestWindow {
     private JPanel content;
@@ -84,6 +86,54 @@ public class FlightManifestWindow {
                 addPassenger();
             }
         });
+        removeBaggageButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<Baggage> selectedItems = baggageList.getSelectedValuesList();
+                for(Baggage b : selectedItems) {
+                    removeBag(b);
+                }
+                updateBaggages();
+            }
+        });
+        removePassengerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<Passenger> selectedItems = passengerList.getSelectedValuesList();
+                for(Passenger p : selectedItems) {
+                    removePassenger(p);
+                }
+                updatePassengers();
+            }
+        });
+    }
+
+    private void removePassenger(Passenger p) {
+        String sql = "DELETE FROM baggage WHERE pid = ?";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, p.getPid());
+            statement.execute();
+            sql = "DELETE FROM passengers where pid = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, p.getPid());
+            statement.execute();
+            statement.close();
+        }catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void removeBag(Baggage b) {
+        String sql = "DELETE FROM baggage WHERE bid = ?";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, b.getBid());
+            statement.execute();
+            statement.close();
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void addPassenger() {
