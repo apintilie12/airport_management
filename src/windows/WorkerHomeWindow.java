@@ -94,7 +94,7 @@ public class WorkerHomeWindow extends JFrame {
             return;
         }
         if(option == 0) {
-            saveChanges();
+//            saveChanges();
             System.out.println("Saved changes");
         } else if(option == 1) {
             System.out.println("Didn't save changes");

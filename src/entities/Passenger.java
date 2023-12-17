@@ -101,6 +101,23 @@ public class Passenger implements Persistable {
         }
     }
 
+    public void loadFromDatabase(Connection conn) {
+        String sql = "SELECT pid FROM passengers WHERE first_name = ? AND last_name = ? AND fid = ? ORDER BY pid DESC LIMIT 1";
+        try {
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, firstName);
+            statement.setString(2, lastName);
+            statement.setInt(3, flightId);
+            ResultSet rs = statement.executeQuery();
+            if(rs.next()) {
+                this.pid = rs.getInt("pid");
+            }
+            statement.close();
+        }catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     @Override
     public String toString() {
         return "Passenger{" +

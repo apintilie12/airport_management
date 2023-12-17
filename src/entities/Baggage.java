@@ -119,6 +119,15 @@ public class Baggage implements Persistable {
                 '}';
     }
 
+    public void autoSetCategory() {
+        if(0 < weight && weight <= 10) {
+            type = BaggageType.CABIN;
+        } else if(10 < weight && weight <= 20) {
+            type = BaggageType.HOLD;
+        } else if(20 < weight && weight <= 32) {
+            type = BaggageType.HEAVY;
+        }
+    }
     public void setBid(int bid) {
         this.bid = bid;
     }

@@ -15,7 +15,6 @@ public class FlightManifestWindow {
     private JButton addPassengerButton;
     private JButton exitButton;
     private JList<Passenger> passengerList;
-    private JButton addBaggageButton;
     private JButton removeBaggageButton;
     private JList<Baggage> baggageList;
     private JLabel paxCapLabel;
@@ -78,6 +77,21 @@ public class FlightManifestWindow {
                 }
             }
         });
+
+        addPassengerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addPassenger();
+            }
+        });
+    }
+
+    private void addPassenger() {
+        NewPassengerDialog dialog = new NewPassengerDialog(this.connection, this.flight);
+        dialog.pack();
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+        updatePassengers();
     }
 
     private void updateBaggages() {

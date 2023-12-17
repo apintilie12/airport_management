@@ -21,14 +21,14 @@ public class AdminHomeWindow {
     private JButton editUserButton;
     private JButton removeUserButton;
     private JButton logoutButton;
-    private JList flightList;
+    private JList<Flight> flightList;
     private JButton addFlightButton;
     private JButton editFlightButton;
     private JButton removeFlightButton;
     private JButton newAircraftButton;
     private JButton editAircraftButton;
     private JButton removeAircraftButton;
-    private JList aircraftList;
+    private JList<Aircraft> aircraftList;
     private JFrame currentFrame;
     private JFrame previousFrame;
     private User user;
