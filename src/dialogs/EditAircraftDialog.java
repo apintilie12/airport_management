@@ -82,6 +82,8 @@ public class EditAircraftDialog extends JDialog {
             air.setAircraftRegistration(aircraftRegistration);
             air.setType(type);
             air.setNotes(notes.isEmpty() ? null : notes);
+            air.saveToDatabase(conn);
+            air.loadFromDatabase(conn, aircraftRegistration);
 //            air.setAid(0);
             dispose();
         }

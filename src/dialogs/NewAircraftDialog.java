@@ -81,13 +81,18 @@ public class NewAircraftDialog extends JDialog {
         String notes = notesField.getText();
         if(aircraftRegistration.isEmpty()) {
             warningLabel.setText("Aircraft Registration cannot be empty!");
-        } else {
+        } else if(!aircraftRegistration.matches("[A-Z0-9]{2}-[A-Z0-9]{3}")) {
+            warningLabel.setText("Aircraft Registration format: XX-XXX!");
+        }
+        else {
             aircraft.setAircraftRegistration(aircraftRegistration);
             aircraft.setType(type);
             aircraft.setNotes(notes.isEmpty() ? null : notes);
             if(aircraft.isInDatabase(conn, aircraftRegistration)) {
                 warningLabel.setText("Aircraft already in database!");
             } else {
+                aircraft.saveToDatabase(conn);
+                aircraft.loadFromDatabase(conn, aircraftRegistration);
                 dispose();
             }
         }

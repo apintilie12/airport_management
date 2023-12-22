@@ -275,9 +275,15 @@ public class AdminHomeWindow {
     }
 
     private void removeAircraft(Aircraft aircraftToRemove) {
-        String sql = "DELETE FROM aircraft WHERE aid = ?";
+        String sql = "DELETE FROM flights WHERE aircraft_registration = ?";
         try {
             PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, aircraftToRemove.getAircraftRegistration());
+            statement.execute();
+            statement.close();
+            
+            sql = "DELETE FROM aircraft WHERE aid = ?";
+            statement = conn.prepareStatement(sql);
             statement.setInt(1, aircraftToRemove.getAid());
             statement.execute();
             statement.close();

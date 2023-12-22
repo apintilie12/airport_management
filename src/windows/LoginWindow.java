@@ -54,6 +54,7 @@ public class LoginWindow {
             login();
             usernameField.setText("");
             passwordField.setText("");
+            errorLabel.setText("");
             if (currentUser.getUserType() == UserType.ADMIN) {
                 new AdminHomeWindow(mainFrame, conn, currentUser);
                 usernameField.requestFocusInWindow();

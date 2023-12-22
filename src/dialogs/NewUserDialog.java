@@ -60,16 +60,16 @@ public class NewUserDialog extends JDialog {
         String confirmPwd = new String(confirmPasswordField.getPassword());
         String userType = (String) userTypeBox.getSelectedItem();
         warningLabel.setForeground(Color.RED);
-        if (username.isEmpty()) {
+        if(username.isEmpty()) {
             warningLabel.setText("Username cannot be empty!");
-        } else if (pwd.isEmpty()) {
+        } else if(!username.matches("^[a-zA-Z0-9]*$")) {
+            warningLabel.setText("Username can only contain alphanumerics!");
+        } else if(pwd.isEmpty()) {
             warningLabel.setText("Password cannot be empty!");
-//        } else if (userType.isEmpty()) {
-//            warningLabel.setText("User type cannot be empty!");
-        } else if (!pwd.equals(confirmPwd)) {
+        } else if(!pwd.equals(confirmPwd)) {
             warningLabel.setText("Passwords do not match!");
         } else {
-            if (newUser.isInDatabase(conn, username)) {
+            if(newUser.isInDatabase(conn, username)) {
                 warningLabel.setText("User already in database!");
                 return;
             }

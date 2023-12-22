@@ -60,9 +60,11 @@ public class EditUserDialog extends JDialog {
         String pwd = new String(passwordField.getPassword());
         String userType = (String) userTypeBox.getSelectedItem();
         warningLabel.setForeground(Color.RED);
-        if (username.isEmpty()) {
+        if(username.isEmpty()) {
             warningLabel.setText("Username cannot be empty!");
-        } else if (pwd.isEmpty()) {
+        } else if(!username.matches("^[a-zA-Z0-9]*$")) {
+            warningLabel.setText("Username can only contain alphanumerics!");
+        } else if(pwd.isEmpty()) {
             warningLabel.setText("Password cannot be empty!");
         } else {
             user.setUsername(username);

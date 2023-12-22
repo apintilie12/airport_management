@@ -112,6 +112,8 @@
           </grid>
         </constraints>
         <properties>
+          <horizontalAlignment value="0"/>
+          <horizontalTextPosition value="0"/>
           <text value=""/>
         </properties>
       </component>
