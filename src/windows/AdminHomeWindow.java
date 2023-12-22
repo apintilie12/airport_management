@@ -87,10 +87,18 @@ public class AdminHomeWindow {
         removeUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                boolean attemptedToDeleteAdmin = false;
                 List<User> selectedValuesList = userList.getSelectedValuesList();
                 for (User usr : selectedValuesList) {
+                    if(usr.getUid() == 1) {
+                        attemptedToDeleteAdmin = true;
+                        continue;
+                    }
                     removeUser(usr);
                     users.remove(usr);
+                }
+                if(attemptedToDeleteAdmin) {
+                    JOptionPane.showMessageDialog(null, "Cannot delete primary user!",  "ERROR`", JOptionPane.ERROR_MESSAGE);
                 }
                 userList.setListData(users);
             }
@@ -281,7 +289,7 @@ public class AdminHomeWindow {
             statement.setString(1, aircraftToRemove.getAircraftRegistration());
             statement.execute();
             statement.close();
-            
+
             sql = "DELETE FROM aircraft WHERE aid = ?";
             statement = conn.prepareStatement(sql);
             statement.setInt(1, aircraftToRemove.getAid());
