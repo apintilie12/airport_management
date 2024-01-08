@@ -10,8 +10,7 @@ public class Main {
     }
 
     private static void test() {
-        UserType usr = UserType.ADMIN;
-        System.out.println(usr.name());
+//        String date = ""
     }
 
     private static void normalRun() {

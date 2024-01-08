@@ -79,6 +79,8 @@ public class WorkerHomeWindow extends JFrame {
             if(mode == UserType.GROUND) {
                 //TODO
                 System.out.println("Did ground interaction");
+                Aircraft aircraft = (Aircraft)selectedItems.get(0);
+                AircraftLoadWindow al = new AircraftLoadWindow(this.currentFrame, aircraft);
             } else {
                 //TODO
                 System.out.println("Did checkin interaction");
