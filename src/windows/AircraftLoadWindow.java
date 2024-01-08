@@ -225,7 +225,7 @@ public class AircraftLoadWindow {
         JButton stopButton = new JButton("Stop Fuelling");
         JLabel fuelLabel = new JLabel("fuel LABEL");
 
-        fuelState = new AircraftState(0, 14000, 50, 1, fuelLabel, "kg");
+        fuelState = new AircraftState(0, aircraft.getFuelCapacity(), 50, 1, fuelLabel, "kg");
 
 
         startButton.addActionListener(new ActionListener() {

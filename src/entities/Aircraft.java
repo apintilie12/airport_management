@@ -14,6 +14,7 @@ public class Aircraft implements Persistable {
     private String manufacturer;
     private int paxCapacity;
     private int holdCapacity;
+    private int fuelCapacity;
     private String notes;
     private ArrayList<Baggage> baggageList;
 
@@ -23,12 +24,13 @@ public class Aircraft implements Persistable {
         this.baggageList = new ArrayList<>();
     }
 
-    public Aircraft(int aid, String aircraftRegistration, String type, int paxCapacity, int holdCapacity, String notes) {
+    public Aircraft(int aid, String aircraftRegistration, String type, int paxCapacity, int holdCapacity, int fuelCapacity, String notes) {
         this.aid = aid;
         this.aircraftRegistration = aircraftRegistration;
         this.type = type;
         this.paxCapacity = paxCapacity;
         this.holdCapacity = holdCapacity;
+        this.fuelCapacity = fuelCapacity;
         this.notes = notes;
         this.baggageList = new ArrayList<Baggage>();
     }
@@ -127,6 +129,7 @@ public class Aircraft implements Persistable {
                     this.manufacturer = rs.getString("manufacturer");
                     this.paxCapacity = rs.getInt("pax_capacity");
                     this.holdCapacity = rs.getInt("hold_capacity");
+                    this.fuelCapacity = rs.getInt("fuel_capacity");
                     this.notes = rs.getString("notes");
                 }
                 statement.close();
@@ -149,7 +152,8 @@ public class Aircraft implements Persistable {
                 String type = rs.getString("type");
                 int paxCapacity = rs.getInt("pax_capacity");
                 int holdCapacity = rs.getInt("hold_capacity");
-                airplanes.add(new Aircraft(aid, aircraftRegistration, type, paxCapacity, holdCapacity, notes));
+                int fuelCapacity = rs.getInt("fuel_capacity");
+                airplanes.add(new Aircraft(aid, aircraftRegistration, type, paxCapacity, holdCapacity, fuelCapacity , notes));
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -212,6 +216,14 @@ public class Aircraft implements Persistable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public int getFuelCapacity() {
+        return fuelCapacity;
+    }
+
+    public void setFuelCapacity(int fuelCapacity) {
+        this.fuelCapacity = fuelCapacity;
     }
 
     public void setPaxCapacity(int paxCapacity) {

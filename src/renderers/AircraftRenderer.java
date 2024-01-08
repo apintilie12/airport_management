@@ -11,7 +11,8 @@ public class AircraftRenderer extends JLabel implements ListCellRenderer<Aircraf
     @Override
     public Component getListCellRendererComponent(JList<? extends Aircraft> list, Aircraft value, int index, boolean isSelected, boolean cellHasFocus) {
         String text = "REGISTRATION: " + value.getAircraftRegistration() + " TYPE: " + value.getType() + " PAX CAPACITY: " +
-                String.valueOf(value.getPaxCapacity()) + " HOLD CAPACITY: " + String.valueOf(value.getHoldCapacity()) +
+                String.valueOf(value.getPaxCapacity()) + " HOLD CAPACITY: " + String.valueOf(value.getHoldCapacity()) + " FUEL CAPACITY: " +
+                value.getFuelCapacity() +
                 " NOTES: " + (value.getNotes() == null ? "NONE" : value.getNotes());
         ImageIcon img = new ImageIcon("res/" + value.getType() + ".png");
         this.setIcon(img);
