@@ -139,9 +139,26 @@ public class Aircraft implements Persistable {
         }
     }
 
-    public static Vector<Aircraft> getAircraftVector(Connection connection) {
+    public static Vector<Aircraft> getAircraftVector(Connection connection, String order) {
         Vector<Aircraft> airplanes = new Vector<>();
-        String sql = "SELECT * FROM airplanes";
+        String sql = "SELECT * FROM airplanes ";
+        String[] aircraftSort = {"DEFAULT", "REGISTRATION ASC", "REGISTRATION DESC", "TYPE ASC", "TYPE DESC"};
+        switch(order) {
+            case "REGISTRATION ASC":
+                sql += " ORDER BY aircraft_registration ASC";
+                break;
+            case "REGISTRATION DESC":
+                sql += " ORDER BY aircraft_registration DESC";
+                break;
+            case "TYPE ASC":
+                sql += " ORDER BY type ASC";
+                break;
+            case "TYPE DESC":
+                sql += " ORDER BY type DESC";
+                break;
+            default:
+                break;
+        }
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();

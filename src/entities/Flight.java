@@ -192,17 +192,31 @@ public class Flight implements Persistable {
                 '}';
     }
 
-    public static Vector<Flight> getFlightVector(Connection connection, String flightType) {
+    public static Vector<Flight> getFlightVector(Connection connection, String order, String flType) {
         Vector<Flight> flights = new Vector<>();
-        String sql;
-        if(flightType.equals("both")) {
-            sql = "SELECT * FROM flights";
-        } else if(flightType.equals("arrival")) {
-            sql = "SELECT * FROM flights WHERE type = 'ARRIVAL' ";
-        } else {
-            sql = "SELECT * FROM flights WHERE type = 'DEPARTURE' ";
+        String sql = "SELECT * FROM flights ";
+        if(flType.equals("arrival")) {
+            sql += " WHERE type = 'ARRIVAL' ";
+        } else if(flType.equals("departure")){
+            sql += " WHERE type = 'DEPARTURE' ";
         }
+        switch(order) {
+            case "FLIGHT NUMBER ASC":
+                sql += " ORDER BY flight_number ASC";
+                break;
+            case "FLIGHT NUMBER DESC":
+                sql += " ORDER BY flight_number DESC";
+                break;
+            case "ARRIVALS FIRST":
+                sql += " ORDER BY type ASC";
+                break;
+            case "DEPARTURES FIRST":
+                sql += " ORDER BY type DESC";
+                break;
+            default:
+                break;
 
+        }
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
@@ -239,11 +253,29 @@ public class Flight implements Persistable {
         this.passengers.add(passenger);
     }
 
-    public void loadPassengers(Connection conn) {
+    public void loadPassengers(Connection conn, String order) {
         if(this.isInDatabase(conn)) {
             passengers.clear();
             try {
-                String sql = "SELECT * FROM passengers WHERE fid = ?";
+                String sql = "SELECT * FROM passengers WHERE fid = ? ";
+                switch(order) {
+                    case "FIRST NAME ASC":
+                        sql += " ORDER BY first_name ASC";
+                        break;
+                    case "FIRST NAME DESC":
+                        sql += " ORDER BY first_name DESC";
+                        break;
+                    case "LAST NAME ASC":
+                        sql += " ORDER BY last_name ASC";
+                        break;
+                    case "LAST NAME DESC":
+                        sql += " ORDER BY last_name DESC";
+                        break;
+                    case "PHONE NO":
+                        sql += " ORDER BY phone_number DESC";
+                    default:
+                        break;
+                }
                 PreparedStatement statement = conn.prepareStatement(sql);
                 statement.setInt(1, this.fid);
                 ResultSet rs = statement.executeQuery();
@@ -264,10 +296,27 @@ public class Flight implements Persistable {
         this.baggages.add(baggage);
     }
 
-    public void loadBaggages(Connection conn) {
+    public void loadBaggages(Connection conn, String order) {
         baggages.clear();
         if(this.isInDatabase(conn)) {
-            String sql = "SELECT * FROM baggage WHERE fid = ?";
+            String sql = "SELECT * FROM baggage WHERE fid = ? ";
+            String[] bagSort = {"DEFAULT", "WEIGHT ASC", "WEIGHT DESC", "TYPE ASC", "TYPE DESC"};
+            switch(order) {
+                case "WEIGHT ASC":
+                    sql += " ORDER BY weight ASC";
+                    break;
+                case "WEIGHT DESC":
+                    sql += " ORDER BY weight DESC";
+                    break;
+                case "TYPE ASC":
+                    sql += " ORDER BY category ASC";
+                    break;
+                case "TYPE DESC":
+                    sql += " ORDER BY category DESC";
+                    break;
+                default:
+                    break;
+            }
             try {
                 PreparedStatement statement = conn.prepareStatement(sql);
                 statement.setInt(1, this.fid);

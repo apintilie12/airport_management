@@ -2,10 +2,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Vector;
@@ -29,6 +26,9 @@ public class AdminHomeWindow {
     private JButton editAircraftButton;
     private JButton removeAircraftButton;
     private JList<Aircraft> aircraftList;
+    private JComboBox<String> userSortingComboBox;
+    private JComboBox<String> flightOrderComboBox;
+    private JComboBox<String> aircraftOrderComboBox;
     private JFrame currentFrame;
     private JFrame previousFrame;
     private User user;
@@ -300,37 +300,68 @@ public class AdminHomeWindow {
         }
     }
 
-    public AdminHomeWindow(JFrame previousFrame, Connection conn, User currentUser, String defaultTab) {
-        this(previousFrame, conn, currentUser);
-        if(defaultTab.equals("usr")) {
-            tabbedPane1.setSelectedIndex(0);
-        } else if(defaultTab.equals("fl")) {
-            tabbedPane1.setSelectedIndex(1);
-        } else if(defaultTab.equals("air")) {
-            tabbedPane1.setSelectedIndex(2);
-        }
-    }
-
     private void init() {
+        String[] usrSort = {"DEFAULT", "USERNAME ASC", "USERNAME DESC", "USER TYPE ASC", "USER TYPE DESC"};
+        for(String val : usrSort) {
+            userSortingComboBox.addItem(val);
+        }
+        userSortingComboBox.setSelectedItem("DEFAULT");
+        userSortingComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    loadUsers();
+                }
+            }
+        });
+
+        String[] flightSort = {"DEFAULT", "FLIGHT NUMBER ASC", "FLIGHT NUMBER DESC", "ARRIVALS FIRST", "DEPARTURES FIRST"};
+        for(String val : flightSort) {
+            flightOrderComboBox.addItem(val);
+        }
+        flightOrderComboBox.setSelectedItem("DEFAULT");
+        flightOrderComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == ItemEvent.SELECTED) {
+                    loadFlights();
+                }
+            }
+        });
+
+        String[] aircraftSort = {"DEFAULT", "REGISTRATION ASC", "REGISTRATION DESC", "TYPE ASC", "TYPE DESC"};
+        for(String val : aircraftSort) {
+            aircraftOrderComboBox.addItem(val);
+        }
+        aircraftOrderComboBox.setSelectedItem("DEFAULT");
+        aircraftOrderComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == ItemEvent.SELECTED) {
+                    loadAircraft();
+                }
+            }
+        });
+
         welcomeLabel.setText("Welcome " + user.getUsername() + "!");
         loadUsers();
         loadFlights();
     }
 
     private void loadUsers() {
-        users = User.getUserVector(conn);
+        users = User.getUserVector(conn, (String) userSortingComboBox.getSelectedItem());
         userList.setListData(users);
         userList.setCellRenderer(new UserRenderer());
     }
 
     private void loadFlights() {
-        flights = Flight.getFlightVector(conn, "both");
+        flights = Flight.getFlightVector(conn, (String) flightOrderComboBox.getSelectedItem(), "both");
         flightList.setListData(flights);
         flightList.setCellRenderer(new FlightRenderer());
     }
 
     private void loadAircraft() {
-        aircraft = Aircraft.getAircraftVector(conn);
+        aircraft = Aircraft.getAircraftVector(conn, (String) aircraftOrderComboBox.getSelectedItem());
         aircraftList.setListData(aircraft);
         aircraftList.setCellRenderer(new AircraftRenderer());
     }

@@ -11,6 +11,7 @@ public class WorkerHomeWindow extends JFrame {
     private JList<Persistable> contentList;
     private JButton openItemButton;
     private JPanel content;
+    private JComboBox<String> itemOrderComboBox;
     private Vector<Persistable> items;
     private Connection conn;
     private JFrame previousFrame;
@@ -77,13 +78,9 @@ public class WorkerHomeWindow extends JFrame {
             JOptionPane.showMessageDialog(currentFrame, "Cannot open multiple items simultaneously!", "ERROR", JOptionPane.ERROR_MESSAGE);
         } else if(selectedItems.size() == 1) {
             if(mode == UserType.GROUND) {
-                //TODO
-                System.out.println("Did ground interaction");
                 Aircraft aircraft = (Aircraft)selectedItems.get(0);
                 AircraftLoadWindow al = new AircraftLoadWindow(this.currentFrame, aircraft);
             } else {
-                //TODO
-                System.out.println("Did checkin interaction");
                 Flight flight = (Flight) selectedItems.get(0);
                 FlightManifestWindow fm = new FlightManifestWindow(this.currentFrame, conn, flight);
             }
@@ -101,31 +98,55 @@ public class WorkerHomeWindow extends JFrame {
     private void init() {
         welcomeLabel.setText("Currently logged in as: " + currentUser.getUsername());
         if(mode == UserType.GROUND) {
+            String[] aircraftSort = {"DEFAULT", "REGISTRATION ASC", "REGISTRATION DESC", "TYPE ASC", "TYPE DESC"};
+            for(String val : aircraftSort) {
+                itemOrderComboBox.addItem(val);
+            }
+            itemOrderComboBox.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if(e.getStateChange() == ItemEvent.SELECTED) {
+                        loadAircraft();
+                    }
+                }
+            });
             openItemButton.setText("Open aircraft load window");
             loadAircraft();
         } else {
+            String[] flightSort = {"DEFAULT", "FLIGHT NUMBER ASC", "FLIGHT NUMBER DESC"};
+            for(String val : flightSort) {
+                itemOrderComboBox.addItem(val);
+            }
+            itemOrderComboBox.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if(e.getStateChange() == ItemEvent.SELECTED) {
+                        loadFlights();
+                    }
+                }
+            });
             openItemButton.setText("Open flight manifest window");
             loadFlights();
         }
     }
 
     private void loadFlights() {
-        Vector<Flight> flights = Flight.getFlightVector(conn, "departure");
+        items.clear();
+        Vector<Flight> flights = Flight.getFlightVector(conn, (String) itemOrderComboBox.getSelectedItem(), "departure");
         for(Flight fl : flights) {
             items.add((Persistable) fl);
         }
         contentList.setListData(items);
         contentList.setCellRenderer(new PersistableRenderer("flight"));
-//        contentList.setCellRenderer(new FlightRenderer());
     }
 
     private void loadAircraft() {
-        Vector<Aircraft> aircrafts = Aircraft.getAircraftVector(conn);
+        items.clear();
+        Vector<Aircraft> aircrafts = Aircraft.getAircraftVector(conn, (String) itemOrderComboBox.getSelectedItem());
         for(Aircraft air : aircrafts) {
             items.add((Persistable) air);
         }
         contentList.setListData(items);
         contentList.setCellRenderer(new PersistableRenderer("aircraft"));
-//        contentList.setCellRenderer(new AircraftRenderer());
     }
 }

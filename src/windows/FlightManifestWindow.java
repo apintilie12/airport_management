@@ -4,7 +4,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.PropertyChangeListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -21,6 +20,8 @@ public class FlightManifestWindow {
     private JList<Baggage> baggageList;
     private JLabel paxCapLabel;
     private JLabel bagCapLabel;
+    private JComboBox<String> paxOrderComboBox;
+    private JComboBox<String> bagOrderComboBox;
     private JFrame previousFrame;
     private Connection connection;
     private Flight flight;
@@ -34,6 +35,9 @@ public class FlightManifestWindow {
         this.flight = flight;
         cargoFill = 0;
         previousFrame.setVisible(false);
+
+        init();
+
         updatePassengers();
         updateBaggages();
 
@@ -108,6 +112,35 @@ public class FlightManifestWindow {
         });
     }
 
+    private void init() {
+        String[] paxSort = {"DEFAULT", "FIRST NAME ASC", " FIRST NAME DESC", "LAST NAME ASC", "LAST NAME DESC", "PHONE NO"};
+        for(String val : paxSort) {
+            paxOrderComboBox.addItem(val);
+        }
+        paxOrderComboBox.setSelectedItem("DEFAULT");
+        paxOrderComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == ItemEvent.SELECTED) {
+                    updatePassengers();
+                }
+            }
+        });
+
+        String[] bagSort = {"DEFAULT", "WEIGHT ASC", "WEIGHT DESC", "TYPE ASC", "TYPE DESC"};
+        for(String val : bagSort) {
+            bagOrderComboBox.addItem(val);
+        }
+        bagOrderComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == ItemEvent.SELECTED) {
+                    updateBaggages();
+                }
+            }
+        });
+    }
+
     private void removePassenger(Passenger p) {
         String sql = "DELETE FROM baggage WHERE pid = ?";
         try {
@@ -145,7 +178,7 @@ public class FlightManifestWindow {
     }
 
     private void updateBaggages() {
-        flight.loadBaggages(connection);
+        flight.loadBaggages(connection, (String) bagOrderComboBox.getSelectedItem());
         baggageList.setListData(flight.getBaggages());
         cargoFill = 0;
         for(Baggage b : flight.getBaggages()) {
@@ -155,7 +188,7 @@ public class FlightManifestWindow {
     }
 
     private void updatePassengers() {
-        flight.loadPassengers(connection);
+        flight.loadPassengers(connection, (String) paxOrderComboBox.getSelectedItem());
         passengerList.setListData(flight.getPassengers());
         updatePaxLabel();
     }

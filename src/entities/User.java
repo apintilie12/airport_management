@@ -135,9 +135,25 @@ public class User implements Persistable {
         }
     }
 
-    public static Vector<User> getUserVector(Connection connection) {
+    public static Vector<User> getUserVector(Connection connection, String order) {
         Vector<User> vector = new Vector<>();
-        String sql = "SELECT * FROM users";
+        String sql = "SELECT * FROM users ";
+        switch(order) {
+            case "USERNAME ASC":
+                sql += "ORDER BY username ASC";
+                break;
+            case "USERNAME DESC":
+                sql += "ORDER BY username DESC";
+                break;
+            case "USER TYPE ASC":
+                sql +="ORDER BY user_type ASC";
+                break;
+            case "USER TYPE DESC":
+                sql += "ORDER BY user_type DESC";
+                break;
+            default:
+                break;
+        }
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
@@ -149,7 +165,7 @@ public class User implements Persistable {
                 vector.add(new User(uid, username, password, userType));
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return vector;
     }
