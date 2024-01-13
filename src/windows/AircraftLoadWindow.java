@@ -39,6 +39,8 @@ public class AircraftLoadWindow {
         currentFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         init();
+        ImageIcon appIcon = new ImageIcon("res/airport.png");
+        currentFrame.setIconImage(appIcon.getImage());
 
         currentFrame.setMinimumSize(new Dimension(800, 800));
         currentFrame.pack();

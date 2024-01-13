@@ -37,6 +37,8 @@ public class LoginWindow {
         mainFrame.setFocusable(true);
         mainFrame.setContentPane(mainPanel);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ImageIcon appIcon = new ImageIcon("res/airport.png");
+        mainFrame.setIconImage(appIcon.getImage());
         mainFrame.setMinimumSize(new Dimension(500, 500));
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);

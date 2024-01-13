@@ -48,6 +48,8 @@ public class AdminHomeWindow {
         currentFrame = new JFrame("AMS");
         currentFrame.setFocusable(true);
         currentFrame.setContentPane(content);
+        ImageIcon appIcon = new ImageIcon("res/airport.png");
+        currentFrame.setIconImage(appIcon.getImage());
         currentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         currentFrame.setMinimumSize(new Dimension(800, 800));
         currentFrame.pack();

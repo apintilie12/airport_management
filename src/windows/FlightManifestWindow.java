@@ -53,6 +53,8 @@ public class FlightManifestWindow {
         currentFrame.setContentPane(content);
         currentFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         currentFrame.setMinimumSize(new Dimension(800, 800));
+        ImageIcon appIcon = new ImageIcon("res/airport.png");
+        currentFrame.setIconImage(appIcon.getImage());
         currentFrame.pack();
         currentFrame.setLocationRelativeTo(null);
 
