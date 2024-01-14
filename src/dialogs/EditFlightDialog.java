@@ -24,6 +24,9 @@ public class EditFlightDialog extends JDialog {
     private Connection connection;
 
     public EditFlightDialog(Connection conn, Flight flightToEdit) {
+        ImageIcon appIcon = new ImageIcon("res/airport.png");
+        this.setIconImage(appIcon.getImage());
+        this.setTitle("Edit Flight");
         this.connection = conn;
         setContentPane(contentPane);
         setModal(true);

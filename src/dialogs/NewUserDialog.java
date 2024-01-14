@@ -16,6 +16,9 @@ public class NewUserDialog extends JDialog {
     private Connection conn;
 
     public NewUserDialog(Connection connection, User newUser) {
+        ImageIcon appIcon = new ImageIcon("res/airport.png");
+        this.setIconImage(appIcon.getImage());
+        this.setTitle("Add User");
         this.conn = connection;
         this.newUser = newUser;
         setContentPane(contentPane);

@@ -17,6 +17,9 @@ public class EditAircraftDialog extends JDialog {
     private Aircraft air;
 
     public EditAircraftDialog(Connection connection, Aircraft air) {
+        ImageIcon appIcon = new ImageIcon("res/airport.png");
+        this.setIconImage(appIcon.getImage());
+        this.setTitle("Edit Aircraft");
         this.conn = connection;
         this.air = air;
         setContentPane(contentPane);

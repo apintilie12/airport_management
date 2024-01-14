@@ -15,6 +15,9 @@ public class EditUserDialog extends JDialog {
     private User user;
 
     public EditUserDialog(Connection conn, User user) {
+        ImageIcon appIcon = new ImageIcon("res/airport.png");
+        this.setIconImage(appIcon.getImage());
+        this.setTitle("Edit User");
         this.conn = conn;
         this.user = user;
         usernameField.setText(user.getUsername());

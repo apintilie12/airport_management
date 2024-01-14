@@ -22,6 +22,9 @@ public class NewAircraftDialog extends JDialog {
     private String types;
 
     public NewAircraftDialog(Connection conn, Aircraft aircraft) {
+        ImageIcon appIcon = new ImageIcon("res/airport.png");
+        this.setIconImage(appIcon.getImage());
+        this.setTitle("Add Aircraft");
         this.conn = conn;
         this.aircraft = aircraft;
         setContentPane(contentPane);

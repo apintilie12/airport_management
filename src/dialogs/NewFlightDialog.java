@@ -22,6 +22,9 @@ public class NewFlightDialog extends JDialog {
     private Connection connection;
 
     public NewFlightDialog(Connection conn, Flight newFlight) {
+        ImageIcon appIcon = new ImageIcon("res/airport.png");
+        this.setIconImage(appIcon.getImage());
+        this.setTitle("Add Flight");
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
